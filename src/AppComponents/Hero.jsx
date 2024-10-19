@@ -3,9 +3,14 @@ import { BackgroundBeamsWithCollision } from "../components/ui/background-beams-
 import { TextGenerateEffect } from "../components/ui/text-generate-effect";
 import { HoverBorderGradient } from "../components/ui/hover-border-gradient";
 import { MdArrowOutward } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
-  const subtitle = "A new and innovative way to manage your boards";
+  const subtitle = "A new and innovative way to manage and create your boards";
+  const navigate = useNavigate();
+  const handleGetStarted = () => {
+    navigate("/signup");
+  };
   return (
     <>
       <BackgroundBeamsWithCollision>
@@ -23,20 +28,19 @@ const Hero = () => {
             words={subtitle}
             className="text-center text-black dark:text-white text-lg md:text-2xl font-semibold"
           />
-         
         </h2>
-        
       </BackgroundBeamsWithCollision>
       <div className="flex justify-center text-center">
-            <HoverBorderGradient
-              containerClassName="rounded-full"
-              as="button"
-              className="dark:bg-black bg-white text-black dark:text-white flex items-center space-x-2"
-            >
-              <span>Get Started</span>
-              <MdArrowOutward />
-            </HoverBorderGradient>
-          </div>
+        <HoverBorderGradient
+          containerClassName="rounded-full"
+          as="button"
+          className="dark:bg-black bg-white text-black dark:text-white flex items-center space-x-2"
+          onClick={handleGetStarted}
+        >
+          <span>Get Started</span>
+          <MdArrowOutward />
+        </HoverBorderGradient>
+      </div>
     </>
   );
 };

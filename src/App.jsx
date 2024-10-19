@@ -6,8 +6,6 @@ import appRouter from "./Routes";
 function App() {
   return (
     <>
-      <Navbar />
-      <Hero/>
       <RouterProvider router={appRouter} />
     </>
   );

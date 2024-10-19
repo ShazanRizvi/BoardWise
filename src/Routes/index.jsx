@@ -1,6 +1,9 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import Root from "../Pages/Root";
 import Home from "../Pages/Home";
+import Auth from "../AppComponents/Auth/Auth";
+import Dashboard from "../Pages/Dashboard";
+import CreateProject from "../AppComponents/Dashboard/DashboardElements/CreateProject";
 
 const appRouter = createBrowserRouter([{
   path: "/",
@@ -14,6 +17,25 @@ const appRouter = createBrowserRouter([{
       path: "home",
       element: <Home />,
     },
+    {
+     path: ":mode",
+     element:<Auth/>,
+   },
+   {
+    path: "dashboard",
+    element:<Dashboard/>,
+    children: [
+      {
+        index: true, // This will load the default dashboard content
+        element: <Navigate to="/dashboard/create_project" replace />,
+      },
+      {
+        path: "/dashboard/create_project",
+        element:<CreateProject/>
+      }
+      // Add more child routes here as needed
+    ],
+  },
   ],
 }]);
 

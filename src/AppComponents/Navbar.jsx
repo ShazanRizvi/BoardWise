@@ -7,7 +7,7 @@ const Navbar = () => {
      const [active, setActive] = useState(null);
   return (
      <div
-      className={cn("fixed top-5 inset-x-0 max-w-2xl mx-auto z-50 border border-black/[0.1] dark:border-white/[0.1] bg-white dark:bg-black rounded-full shadow-lg")}
+      className={cn("fixed top-5 inset-x-0 max-w-2xl mx-auto z-50 border border-black/[0.1] dark:border-white/[0.1] bg-white dark:bg-black rounded-full shadow-md shadow-slate-200")}
     >
       <Menu setActive={setActive}>
         <MenuItem setActive={setActive} active={active} item="About">
@@ -52,11 +52,6 @@ const Navbar = () => {
             <h2 href="/individual">Individual</h2>
             <h2 href="/team">Team</h2>
             <h2 href="/enterprise">Enterprise</h2>
-          </div>
-        </MenuItem>
-        <MenuItem setActive={setActive} active={active} item="Sign up">
-          <div className="flex flex-col space-y-4 text-sm">
-            <h2 href="/login">Login</h2>
           </div>
         </MenuItem>
       </Menu>
