@@ -15,15 +15,7 @@ import {
 } from "@/components/ui/select";
 import { DatePicker } from "../../../components/ui/datepicker";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { set } from "date-fns";
+import SidePreview from "./SidePreview";
 const CreateProject = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -146,19 +138,12 @@ const CreateProject = () => {
         </Formik>
       </div>
 
-      <div className="m-5 ml-0 w-2/5 bg-gradient-to-t from-purple-500/20 via-violet-500/10 to-pink-500/5 p-10 shadow-xl shadow-slate-100 rounded-xl">
-        <Card>
-          <CardHeader>
-            <CardTitle>The Dhruva Project</CardTitle>
-            <CardDescription>This is a dummy project</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p>Card Content</p>
-          </CardContent>
-          <CardFooter>
-            <p>Card Footer</p>
-          </CardFooter>
-        </Card>
+      <div className="m-5 ml-0 w-2/5 bg-gradient-to-t from-purple-500/20 via-violet-500/10 to-pink-500/5 p-5 shadow-xl shadow-slate-100 rounded-xl overflow-clip">
+      <div className="w-full">
+      <SidePreview />
+
+      </div>
+       
       </div>
     </div>
   );
