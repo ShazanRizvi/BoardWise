@@ -40,7 +40,7 @@ export default {
           800: '#831843',     // Darker still
           900: '#701a3f',   
         },
-        accent: '#10B981',      // Accent color
+        accent: '#f5f3ff',      // Accent color
         muted: '#6B7280',       // Muted grey color
         background: '#F3F4F6',  // Background color
         foreground: '#111827',  // Foreground text color
