@@ -1,12 +1,16 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import TeammatesCard from "./SidePreviewComponents/TeammatesCard";
 import ExisitngProjectCard from "./SidePreviewComponents/ExisitngProjectCard";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-const SidePreview = () => {
+const SidePreview = ({isDropdownActive}) => {
+  const [activeTab, setActiveTab] = useState("previousProjects");
+  useEffect(() => {
+    setActiveTab(isDropdownActive ? "teammates" : "previousProjects");
+  }, [isDropdownActive]);
   return (
-    <Tabs defaultValue="previousProjects" className="w-full">
+    <Tabs defaultValue="previousProjects" value={activeTab} onValueChange={setActiveTab}  className="w-full">
       <TabsList>
         <TabsTrigger value="previousProjects">Your Projects</TabsTrigger>
         <TabsTrigger value="teammates">Teammates</TabsTrigger>

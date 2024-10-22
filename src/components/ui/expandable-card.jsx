@@ -92,7 +92,7 @@ export function ExpandableCard({cards}) {
                   layoutId={`button-${active.title}-${id}`}
                   href={active.ctaLink}
                   target="_blank"
-                  className="px-4 py-3 text-sm rounded-full font-bold bg-green-500 text-white">
+                  className="px-4 py-3 text-sm rounded-full font-bold bg-primary-500 text-white">
                   {active.ctaText}
                 </motion.a>
               </div>
