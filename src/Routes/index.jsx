@@ -4,6 +4,7 @@ import Home from "../Pages/Home";
 import Auth from "../AppComponents/Auth/Auth";
 import Dashboard from "../Pages/Dashboard";
 import CreateProject from "../AppComponents/Dashboard/DashboardElements/CreateProject";
+import ProjectBoard from "../AppComponents/Dashboard/DashboardElements/ProjectBoard";
 
 const appRouter = createBrowserRouter([{
   path: "/",
@@ -32,8 +33,11 @@ const appRouter = createBrowserRouter([{
       {
         path: "/dashboard/create_project",
         element:<CreateProject/>
+      },
+      {
+        path:'project/:projectId',
+        element:<ProjectBoard/>
       }
-      // Add more child routes here as needed
     ],
   },
   ],

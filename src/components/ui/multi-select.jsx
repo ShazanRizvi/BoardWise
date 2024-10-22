@@ -13,9 +13,9 @@ const multiSelectVariants = cva(
   {
     variants: {
       variant: {
-        default: "border-foreground/10 text-foreground bg-card hover:bg-card/80 hover:border-foreground/20",
-        secondary: "border-foreground/10 bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        destructive: "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
+        default: "border-foreground/10 text-foreground bg-red-500 hover:bg-card/80 hover:border-foreground/20",
+        secondary: "border-foreground/10 bg-secondary-500 text-secondary-foreground hover:bg-secondary/80",
+        destructive: "border-transparent bg-red-600 text-destructive-foreground hover:bg-destructive/80",
         inverted: "inverted",
       },
     },
@@ -99,7 +99,7 @@ export const MultiSelect = React.forwardRef(
             {...props}
             onClick={handleTogglePopover}
             className={cn(
-              "flex w-full text-black/30 bg-background font-normal p-1 rounded-md border border-primary-100 min-h-10 h-auto items-center justify-between bg-inherit hover:bg-inherit",
+              "flex w-full text-black bg-background font-normal p-1 rounded-md border border-primary-100 min-h-10 h-auto items-center justify-between hover:bg-primary-50",
               className
             )}
           >
