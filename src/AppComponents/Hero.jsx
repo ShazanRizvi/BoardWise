@@ -12,7 +12,7 @@ const Hero = () => {
     navigate("/signup");
   };
   return (
-    <div className='fex-col'>
+    <div className=" h-screen">
       <BackgroundBeamsWithCollision>
         <h2 className="text-2xl relative z-20 md:text-4xl lg:text-7xl font-bold text-center text-black dark:text-white font-sans tracking-tight">
           Welcome to{" "}
@@ -28,21 +28,20 @@ const Hero = () => {
             words={subtitle}
             className="text-center text-black dark:text-white text-lg md:text-2xl font-semibold"
           />
+           <div className="flex justify-center w-full mt-20">
+          <HoverBorderGradient
+            containerClassName="rounded-full"
+            as="button"
+            className="dark:bg-black text-xl tracking-wider bg-white text-black dark:text-white flex items-center space-x-2 hover:scale-102 transform transition-transform duration-300 ease-in-out py-2 px-6 rounded-full font-normal"
+            onClick={handleGetStarted}
+          >
+            <span>Get Started</span>
+            <MdArrowOutward />
+          </HoverBorderGradient>
+        </div>
         </h2>
        
-      
       </BackgroundBeamsWithCollision>
-     <div className="flex justify-center mt-0">   
-      <HoverBorderGradient
-          containerClassName="rounded-full"
-          as="button"
-          className="dark:bg-black bg-white text-black dark:text-white flex items-center space-x-2 hover:scale-102 transform transition-transform duration-300 ease-in-out py-2 px-4 rounded-full font-semibold"
-          onClick={handleGetStarted}
-        >
-          <span>Get Started</span>
-          <MdArrowOutward />
-        </HoverBorderGradient>
-        </div>
     </div>
   );
 };

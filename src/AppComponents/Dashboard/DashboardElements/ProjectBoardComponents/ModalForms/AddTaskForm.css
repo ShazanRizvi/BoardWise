@@ -1,0 +1,13 @@
+.ql-editor {
+ 
+  height: 100px; /* Full height */
+  overflow-y: auto; /* Make content scrollable */
+  padding: 10px; /* Add padding */
+  box-sizing: border-box; /* Ensure padding doesn't add to width/height */
+}
+
+.ql-container {
+  
+  height: 100px; /* Set the fixed height for the editor input area */
+  overflow-y: none; /* Make the content inside the editor scrollable */
+}

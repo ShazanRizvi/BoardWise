@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/Button";
 
 import { useDroppable } from "@dnd-kit/core";
@@ -7,31 +7,51 @@ import BoardCard from "./BoardCard";
 import { HiDotsVertical } from "react-icons/hi";
 import { ScrollArea } from "../../../../components/ui/scroll-area";
 import { GoPlus } from "react-icons/go";
+import AddEditTaskDialog from "./AddEditTaskDialog";
+import AddTaskForm from "./ModalForms/AddTaskForm";
+import { FcGenealogy } from "react-icons/fc";
 
 const BoardColumn = ({ column, cards }) => {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { setNodeRef } = useDroppable({
     id: column.id,
   });
+
+  const handleDialogOpen = () => {
+    setIsDialogOpen((prev) => !prev);
+  };
   return (
-    <div className="w-full h-full " ref={setNodeRef}>
-      <div className="p-2">
+    <div className="w-full h-full overflow-auto" ref={setNodeRef}>
+      <div className="p-2 sticky top-0 bottom-5 bg-gray-100 z-10">
         <div className="flex justify-between items-center">
-          <h2 className="text-base font-semibold">{column.title}</h2>
+          <div className="flex gap-2 items-center">
+            <h2 className="text-base font-semibold">{column.title}</h2>
+            <div className=" text-gray-500">{cards.length} </div>
+          </div>
           <HiDotsVertical />
         </div>
       </div>
-      <div className="mr-2 ml-2">
+      <div className="mr-2 ml-2 sticky top-14 z-10 ">
         <Button
-          className="w-full p-5 rounded-md shadow-md bg-white text-black hover:bg-primary-200"
+          className="w-full p-5 rounded-lg  bg-white text-black hover:bg-primary-200"
           size="sm"
+          onClick={handleDialogOpen}
         >
           <GoPlus size={30} />
         </Button>
+        <AddEditTaskDialog
+          isDialogOpen={isDialogOpen}
+          setIsDialogOpen={setIsDialogOpen}
+          Title={`${column.title} Task`}
+          icon={<FcGenealogy size={24} />}
+        >
+          <AddTaskForm />
+        </AddEditTaskDialog>
       </div>
 
-      <div className="column-body mr-2 ml-2">
+      <div className="overflow-y-auto  mr-2 ml-2 ">
         {cards.map((card) => (
-          <BoardCard className="z-80" key={card.id} card={card} />
+          <BoardCard  key={card.id} card={card} />
         ))}
       </div>
     </div>

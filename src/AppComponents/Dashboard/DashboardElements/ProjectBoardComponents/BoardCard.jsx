@@ -8,7 +8,7 @@ import { AnimatedTooltip } from "@/components/ui/animated-tooltip";
 import { BiMessageSquare } from "react-icons/bi";
 
 const BoardCard = ({ card }) => {
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+  const { attributes, listeners, setNodeRef, transform ,isDragging } = useDraggable({
     id: card.id, // Unique ID for each card
   });
 
@@ -16,14 +16,20 @@ const BoardCard = ({ card }) => {
     transform: transform
       ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
       : undefined,
+    zIndex: isDragging ? 1000 : 'auto', // Set high z-index when dragging
+    position: isDragging ? 'absolute' : 'relative', // Ensure it's positioned properly when dragging
+    width: isDragging ? '320px' : '100%', // Maintain card width while dragging (adjust this value)
+    height: isDragging ? '205px' : 'auto', // Maintain card height while dragging
+    // Keep the height automatic to prevent resizing
   };
   return (
     <motion.div
-      className="p-5 rounded-xl bg-white shadow-md mt-5"
+      className="p-5 rounded-xl bg-white shadow-md mt-5 z-50 "
       ref={setNodeRef}
       style={style}
       {...listeners}
       {...attributes}
+      
     >
       <div className="flex justify-between items-center ">
         <div className="flex gap-1">
