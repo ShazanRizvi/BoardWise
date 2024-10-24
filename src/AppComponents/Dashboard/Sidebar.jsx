@@ -44,7 +44,7 @@ export function DashboardSidebar() {
   ];
   const [open, setOpen] = useState(false);
   return (
-      <Sidebar open={open} setOpen={setOpen} className='bg-gradient-to-tl from-primary-400 to-secondary-200'>
+      <Sidebar open={open} setOpen={setOpen} className='bg-gradient-to-t from-purple-500/20 via-violet-500/10 to-pink-500/5'>
         <SidebarBody className="justify-between gap-10">
           <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
             {open ? <Logo /> : <LogoIcon />}

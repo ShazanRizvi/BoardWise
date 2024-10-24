@@ -60,9 +60,9 @@ const CreateProject = () => {
           }}
         >
           {({ errors, touched }) => (
-            <Form className="mt-10 w-full">
-              <ScrollArea className="w-full  h-[700px]">
-                <div className="p-4">
+            <Form className="mt-5 w-full">
+              <ScrollArea className="w-full h-[700px]">
+                <div className="p-2">
                   <div className="flex justify-between w-full gap-4">
                     <div className="w-full">
                       <Label>Project Name</Label>

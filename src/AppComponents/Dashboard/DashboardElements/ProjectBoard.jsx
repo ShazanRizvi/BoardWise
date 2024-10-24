@@ -1,23 +1,24 @@
-import React from 'react'
-import { useParams } from 'react-router-dom'
+import React from "react";
+import { useParams } from "react-router-dom";
 import { FcParallelTasks } from "react-icons/fc";
+import CardBoard from "./ProjectBoardComponents/CardBoard";
 
 const ProjectBoard = () => {
-     const { projectId } = useParams();
+  const { projectId } = useParams();
   return (
-    <div className='p-5'>
-      <div className='flex justify-between items-center'>
-      <div>
-      <FcParallelTasks size={30} />
+    <div className="p-5 w-full">
+      <div className="flex items-center">
+        <div>
+          <FcParallelTasks size={30} />
         </div>
         <div>
-        <h1 className='text-2xl font-bold'>Project K</h1>
+          <h1 className="text-2xl font-bold">{projectId}</h1>
         </div>
-        
-        
       </div>
-    </div>
-  )
-}
+      <CardBoard />
 
-export default ProjectBoard
+    </div>
+  );
+};
+
+export default ProjectBoard;
