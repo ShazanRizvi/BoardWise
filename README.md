@@ -1,1 +1,2 @@
-![BoardWise · 3 35am · 10-17](https://github.com/user-attachments/assets/8125d1be-4c03-4937-ad2f-67d1001eb565)
+
+![Kapture 2024-10-25 at 03 40 26](https://github.com/user-attachments/assets/b9cd2636-70d5-4e19-8f7a-33240e59f259)
