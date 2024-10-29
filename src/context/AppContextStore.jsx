@@ -1,6 +1,19 @@
 import React, { useState } from "react";
 import AppContext from "./AppContext";
 const AppContextStore = ({ children }) => {
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [chatType, setChatType] = useState(null);
+  const [selectedCard, setSelectedCard] = useState(null);
+  const openDrawerWithChat = (type, card) => {
+    setChatType(type);
+    setSelectedCard(card);
+    setIsDrawerOpen(true);
+
+  };
+
+  const closeDrawer = () => {
+    setIsDrawerOpen(false);
+  };
   const [columns, setColumns] = useState([
     {
       id: "column-1",
@@ -34,14 +47,16 @@ const AppContextStore = ({ children }) => {
           id: 1,
           name: "John Doe",
           designation: "Software Engineer",
-          image: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&w=3387&q=80",
+          image:
+            "https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&w=3387&q=80",
         },
         {
           id: 2,
           name: "Robert Johnson",
           designation: "Product Consultant",
-          image: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=800&q=60",
-        }
+          image:
+            "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=800&q=60",
+        },
       ],
     },
     "card-2": {
@@ -57,14 +72,16 @@ const AppContextStore = ({ children }) => {
           id: 1,
           name: "John Doe",
           designation: "Software Engineer",
-          image: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&w=3387&q=80",
+          image:
+            "https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&w=3387&q=80",
         },
         {
           id: 2,
           name: "Robert Johnson",
           designation: "Product Consultant",
-          image: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=800&q=60",
-        }
+          image:
+            "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=800&q=60",
+        },
       ],
     },
     "card-3": {
@@ -80,14 +97,16 @@ const AppContextStore = ({ children }) => {
           id: 1,
           name: "John Doe",
           designation: "Software Engineer",
-          image: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&w=3387&q=80",
+          image:
+            "https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&w=3387&q=80",
         },
         {
           id: 2,
           name: "Robert Johnson",
           designation: "Product Consultant",
-          image: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=800&q=60",
-        }
+          image:
+            "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=800&q=60",
+        },
       ],
     },
     "card-4": {
@@ -103,14 +122,44 @@ const AppContextStore = ({ children }) => {
           id: 1,
           name: "John Doe",
           designation: "Software Engineer",
-          image: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&w=3387&q=80",
+          image:
+            "https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&w=3387&q=80",
         },
         {
           id: 2,
           name: "Robert Johnson",
           designation: "Product Consultant",
-          image: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=800&q=60",
-        }
+          image:
+            "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=800&q=60",
+        },
+        {
+          id: 3,
+          name: "John Doe",
+          designation: "Software Engineer",
+          image:
+            "https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&w=3387&q=80",
+        },
+        {
+          id: 4,
+          name: "Robert Johnson",
+          designation: "Product Consultant",
+          image:
+            "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=800&q=60",
+        },
+        {
+          id: 5,
+          name: "John Doe",
+          designation: "Software Engineer",
+          image:
+            "https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&w=3387&q=80",
+        },
+        {
+          id: 6,
+          name: "Robert Johnson",
+          designation: "Product Consultant",
+          image:
+            "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=800&q=60",
+        },
       ],
     },
     "card-5": {
@@ -126,20 +175,35 @@ const AppContextStore = ({ children }) => {
           id: 1,
           name: "John Doe",
           designation: "Software Engineer",
-          image: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&w=3387&q=80",
+          image:
+            "https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&w=3387&q=80",
         },
         {
           id: 2,
           name: "Robert Johnson",
           designation: "Product Consultant",
-          image: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=800&q=60",
-        }
+          image:
+            "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=800&q=60",
+        },
       ],
     },
   });
 
   return (
-    <AppContext.Provider value={{ columns, setColumns, cards, setCards }}>
+    <AppContext.Provider
+      value={{
+        columns,
+        setColumns,
+        cards,
+        setCards,
+        isDrawerOpen,
+        setIsDrawerOpen,
+        openDrawerWithChat,
+        closeDrawer,
+        chatType,
+        selectedCard
+      }}
+    >
       {children}
     </AppContext.Provider>
   );

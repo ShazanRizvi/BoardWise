@@ -21,7 +21,7 @@ const BoardColumn = ({ column, cards }) => {
     setIsDialogOpen((prev) => !prev);
   };
   return (
-    <div className="w-full h-full overflow-auto" ref={setNodeRef}>
+    <div className=" h-full w-full overflow-auto" ref={setNodeRef}>
       <div className="p-2 sticky top-0 bottom-5 bg-gray-100 z-10">
         <div className="flex justify-between items-center">
           <div className="flex gap-2 items-center">
@@ -31,7 +31,7 @@ const BoardColumn = ({ column, cards }) => {
           <HiDotsVertical />
         </div>
       </div>
-      <div className="mr-2 ml-2 sticky top-14 z-10 ">
+      <div className="mr-2 ml-2 sticky  top-14 z-10 ">
         <Button
           className="w-full p-5 rounded-lg  bg-white text-black hover:bg-primary-200"
           size="sm"
@@ -49,7 +49,7 @@ const BoardColumn = ({ column, cards }) => {
         </AddEditTaskDialog>
       </div>
 
-      <div className="overflow-y-auto  mr-2 ml-2 ">
+      <div className="overflow-y-auto  mr-2 ml-2 pb-5  ">
         {cards.map((card) => (
           <BoardCard  key={card.id} card={card} />
         ))}

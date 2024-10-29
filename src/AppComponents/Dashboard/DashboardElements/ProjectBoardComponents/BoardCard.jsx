@@ -1,65 +1,77 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useState, useContext } from "react";
 import { useDraggable } from "@dnd-kit/core";
 import { Badge } from "@/components/ui/badge";
 import { HiDotsVertical } from "react-icons/hi";
 import { Separator } from "@/components/ui/Separator";
 import { AnimatedTooltip } from "@/components/ui/animated-tooltip";
 import { BiMessageSquare } from "react-icons/bi";
+import AppContext from "../../../../context/AppContext";
+import SideDrawer from "./SideDrawer";
+import TaskChat from "./ChatInterfaces/TaskChat";
+import UserChat from "./ChatInterfaces/UserChat";
 
 const BoardCard = ({ card }) => {
-  const { attributes, listeners, setNodeRef, transform ,isDragging } = useDraggable({
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: card.id, // Unique ID for each card
   });
+  const { isDrawerOpen, chatType, openDrawerWithChat, closeDrawer, selectedCard } = useContext(AppContext);
+  
 
-  const style = {
-    transform: transform
-      ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
-      : undefined,
-    zIndex: isDragging ? 1000 : 'auto', // Set high z-index when dragging
-    position: isDragging ? 'absolute' : 'relative', // Ensure it's positioned properly when dragging
-    width: isDragging ? '320px' : '100%', // Maintain card width while dragging (adjust this value)
-    height: isDragging ? '205px' : 'auto', // Maintain card height while dragging
-    // Keep the height automatic to prevent resizing
-  };
+  const handleTaskChat = () => openDrawerWithChat("task", card);
+  const handleUserChat = () => openDrawerWithChat("user", card);
+
   return (
-    <motion.div
-      className="p-5 rounded-xl bg-white shadow-md mt-5 z-50 "
+    <div
+      className={`p-5 rounded-xl bg-white shadow-md mt-5 z-50`}
       ref={setNodeRef}
-      style={style}
-      {...listeners}
       {...attributes}
-      
     >
-      <div className="flex justify-between items-center ">
-        <div className="flex gap-1">
-          {card.badges.map((badge, index) => (
-            <Badge
-              key={index}
-              className={`badge px-3 py-1 text-xs rounded-full text-white`}
-              style={{ backgroundColor: badge.color }}
-            >
-              {badge.label}
-            </Badge>
-          ))}
+      <div
+        className={`${isDragging ? "cursor-grabbing" : "cursor-grab"}`}
+        {...listeners}
+        {...attributes}
+      >
+        <div className="flex justify-between items-center">
+          <div className="flex gap-1">
+            {card.badges.map((badge, index) => (
+              <Badge
+                key={index}
+                className={`badge px-3 py-1 text-xs rounded-full text-white`}
+                style={{ backgroundColor: badge.color }}
+              >
+                {badge.label}
+              </Badge>
+            ))}
+          </div>
+          <div>
+            <HiDotsVertical />
+          </div>
         </div>
-        <div>
-          <HiDotsVertical />
-        </div>
+        <h2 className="text-base font-semibold mt-4">{card.title}</h2>
+        <p className="text-sm text-gray-500">{card.description}</p>
       </div>
-      <h2 className="text-base font-semibold mt-4">{card.title}</h2>
-      <p className="text-sm text-gray-500">{card.description}</p>
       <Separator className="mt-5 bg-gray-100" />
       <div className="flex justify-between items-center w-full mt-2">
         <div className="flex">
-          <AnimatedTooltip items={card?.people} />
+          <button className="flex " onClick={handleUserChat}>
+            <AnimatedTooltip items={card?.people} />
+          </button>
         </div>
         <div className="flex items-center gap-1">
-          <BiMessageSquare size={24} color="#cbd5e1" />
-          <p className="text-sm text-slate-400">4</p>
+          <button
+            onClick={handleTaskChat}
+            className=" flex items-center"
+          >
+            <BiMessageSquare size={24} color="#cbd5e1" />
+            <p className="text-sm text-slate-400">4</p>
+          </button>
         </div>
       </div>
-    </motion.div>
+      <SideDrawer isOpen={isDrawerOpen} closeDrawer={closeDrawer}>
+      {chatType === "task" && <TaskChat card={selectedCard} />}
+      {chatType === "user" && <UserChat />}
+      </SideDrawer>
+    </div>
   );
 };
 

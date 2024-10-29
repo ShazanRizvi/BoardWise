@@ -1,15 +1,17 @@
-import React, { useContext } from "react";
-import { DndContext, useDroppable, useDraggable } from "@dnd-kit/core";
+import React, { useContext, useState } from "react";
+import { DndContext, useDroppable, useDraggable, DragOverlay } from "@dnd-kit/core";
 import {
   sortableKeyboardCoordinates,
   rectSortingStrategy,
 } from "@dnd-kit/sortable";
 import AppContext from "../../../../context/AppContext";
 import BoardColumn from "./BoardColumn";
+import BoardCardOverlay from "./BoardCardOverlay";
 
 const CardBoard = () => {
   const { columns, setColumns, cards, setCards } = useContext(AppContext);
-  console.log(columns);
+ 
+  const [activeId, setActiveId] = useState(null);
 
   const addColumn = () => {
     setColumns([
@@ -22,8 +24,12 @@ const CardBoard = () => {
     setColumns(columns.filter((column) => column.id !== columnId));
   };
 
+  const handleDragStart = (event) => {
+    setActiveId(event.active.id); // Set active card's ID when dragging starts
+  };
   const handleDragEnd = (event) => {
     const { active, over } = event;
+    setActiveId(null);
 
     if (!over) return;
 
@@ -63,7 +69,7 @@ const CardBoard = () => {
     setColumns(updatedColumns);
   };
   return (
-    <DndContext onDragEnd={handleDragEnd}>
+    <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div className="w-full flex mt-5 p-2 h-full bg-gray-100 rounded-xl shadow-2xl shadow-gray-500/50">
         {columns.map((column) => (
           <BoardColumn
@@ -72,6 +78,12 @@ const CardBoard = () => {
             cards={column.cardIds.map((cardId) => cards[cardId])}
           />
         ))}
+        <DragOverlay>
+          {activeId ? (
+            <BoardCardOverlay card={cards[activeId]}/>
+          ) : null}
+
+        </DragOverlay>
       </div>
     </DndContext>
   );
