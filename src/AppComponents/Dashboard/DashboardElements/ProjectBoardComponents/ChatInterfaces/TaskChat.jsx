@@ -60,24 +60,38 @@ const TaskChat = ({ card }) => {
       </div>
       <div
         ref={messageContainerRef}
-        className="flex flex-grow mb-28 flex-col   overflow-y-auto no-scrollbar p-4  rounded-lg"
+        className="flex flex-grow mb-28 flex-col overflow-y-auto no-scrollbar p-4 rounded-lg "
       >
-        {messages.map((msg, index) => (
-          <MessageBubble
-            key={index}
-            message={msg}
-            isSender={msg.sender === "You"}
-          />
-        ))}
-
+        {messages.length === 0 ? (
+          <div className="flex ">
+            <div className="bg-gradient-to-tr from-primary-100 to-secondary-100 p-4 rounded-xl shadow-xl">
+              <div className="flex justify-center">
+                <h1 className="text-lg text-black font-semibold ">
+                  No messages yet for this task
+                </h1>
+              </div>
+              <div>
+                <p className="text-sm mt-4 text-gray-500">This is a Task group to interact with people in the task. Chat, Brainstorm and interact with your teammates here!</p>
+              </div>
+            </div>
+          </div>
+        ) : (
+          messages.map((msg, index) => (
+            <MessageBubble
+              key={index}
+              message={msg}
+              isSender={msg.sender === "You"}
+            />
+          ))
+        )}
         <div ref={messagesEndRef} />
       </div>
 
       {/* Chat input */}
       <div className=" fixed bottom-0 left-0 right-0  p-4 bg-transparent">
-        <div className="flex items-center w-full border border-gray-300  rounded-full overflow-hidden">
-          <div className="w-10 h-10 flex justify-center items-center ">
-            <HiOutlinePaperClip size={24} color='grey' />
+        <div className="flex items-center w-full border border-gray-400  rounded-full overflow-hidden">
+          <div className="w-10 h-10 ml-4 flex justify-center items-center ">
+            <HiOutlinePaperClip size={24} color="grey" />
           </div>
           <Input
             type="text"

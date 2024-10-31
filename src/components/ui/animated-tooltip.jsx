@@ -8,7 +8,7 @@ import {
   useSpring,
 } from "framer-motion";
 
-export const AnimatedTooltip = ({ items }) => {
+export const AnimatedTooltip = ({ items, onPersonClick }) => {
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const springConfig = { stiffness: 100, damping: 5 };
   const x = useMotionValue(0); // going to set this value on mouse move
@@ -73,6 +73,7 @@ export const AnimatedTooltip = ({ items }) => {
             width={100}
             src={item.image}
             alt={item.name}
+            onClick={() => onPersonClick(item)}
             className="object-cover !m-0 !p-0 object-top rounded-full h-10 w-10 border-2 group-hover:scale-105 group-hover:z-30 border-white  relative transition duration-500"
           />
         </div>
