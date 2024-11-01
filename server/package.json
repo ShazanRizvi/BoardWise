@@ -1,0 +1,22 @@
+{
+  "name": "boardwise_server",
+  "version": "1.0.0",
+  "description": "Boardwise Main Server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "author": "Syed Mohammad",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "nodemon": "^3.1.7"
+  },
+  "devDependencies": {
+    "prisma": "^5.21.1"
+  }
+}
