@@ -6,10 +6,93 @@
 
 generator client {
   provider = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
+}
+model Organization {
+  id               String    @id @default(uuid())
+  organizationName String
+  users            User[]
+  orgLogo          String?
+  products         Product[]
+  projects         Project[]
+  inviteTokens     InviteToken[] 
+
+  @@map("organization")
+}
+
+model Product {
+  id            String       @id @default(uuid())
+  productName   String
+  users         User[]
+  projects      Project[]    @relation("ProductProjects")
+  organization  Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+
+  @@map("product")
+}
+
+model Project {
+  id            String       @id @default(uuid())
+  projectName   String
+  user          User         @relation(fields: [userId], references: [id])
+  userId        String
+  organization  Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+  tasks         Task[]
+  products      Product[]    @relation("ProductProjects")
+
+  @@map("project")
+}
+
+model Task {
+  id             String   @id @default(uuid())
+  taskName       String
+  taskDescription String?
+  taskTags       String[]
+  users          User[]
+  project        Project   @relation(fields: [projectId], references: [id])
+  projectId      String
+
+  @@map("task")
+}
+
+model User {
+  id           String       @id @default(uuid())
+  username     String
+  emailAddress String       @unique
+  password     String
+  organization Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+  products     Product[]
+  projects     Project[]
+  tasks        Task[]
+  userRole     Role[]
+
+  @@map("user")
+}
+
+model Role {
+  id    String @id @default(uuid())
+  name  String
+  users User[]
+
+  @@map("role")
+}
+
+model InviteToken {
+  id             String       @id @default(uuid())
+  token          String       @unique
+  emailAddress   String
+  expiresAt      DateTime
+  isUsed         Boolean      @default(false)
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String       // Foreign key that links InviteToken to Organization
+
+  @@index([organizationId])  // Optional: index on organizationId for faster lookups
 }
