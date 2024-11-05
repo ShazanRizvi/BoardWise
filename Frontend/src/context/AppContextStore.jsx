@@ -189,6 +189,23 @@ const AppContextStore = ({ children }) => {
     },
   });
 
+
+  // Animated Stepper
+  const [currentStep, setCurrentStep] = useState(1)
+  const steps = [
+    { title: "Step 1", description: "Personal Info", stepDescription: "Enter your personal information" },  
+    { title: "Step 2", description: "Create Organization", stepDescription: "Create your organization" },
+    { title: "Step 3", description: "Create Product", stepDescription: "Create your product" },
+    { title: "Step 4", description: "Create Project", stepDescription: "Create your project" },
+  ]
+  const handleNext = () => {
+    setCurrentStep((prev) => Math.min(prev + 1, steps.length))
+  }
+
+  const handlePrev = () => {
+    setCurrentStep((prev) => Math.max(prev - 1, 1))
+  }
+
   return (
     <AppContext.Provider
       value={{
@@ -201,7 +218,11 @@ const AppContextStore = ({ children }) => {
         openDrawerWithChat,
         closeDrawer,
         chatType,
-        selectedCard
+        selectedCard,
+        currentStep,
+        steps,
+        handleNext,
+        handlePrev,
       }}
     >
       {children}

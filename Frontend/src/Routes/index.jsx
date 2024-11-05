@@ -1,10 +1,11 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import Root from "../Pages/Root";
 import Home from "../Pages/Home";
-import Auth from "../AppComponents/Auth/Auth";
+import OnboardingForm from "../AppComponents/Onboarding/OnboardingForm";
 import Dashboard from "../Pages/Dashboard";
 import CreateProject from "../AppComponents/Dashboard/DashboardElements/CreateProject";
 import ProjectBoard from "../AppComponents/Dashboard/DashboardElements/ProjectBoard";
+import SignUp from "../AppComponents/Onboarding/SignUp/SignUp";
 
 const appRouter = createBrowserRouter([{
   path: "/",
@@ -20,7 +21,7 @@ const appRouter = createBrowserRouter([{
     },
     {
      path: ":mode",
-     element:<Auth/>,
+     element:<OnboardingForm cardTitle="Sign Up" cardDescription="Sign Up to get started"><SignUp/></OnboardingForm>,
    },
    {
     path: "dashboard",
