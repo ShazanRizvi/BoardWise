@@ -10,6 +10,7 @@ const Root = () => {
     "/dashboard",
     "/dashboard/create_project",
     "/dashboard/project/:projectId",
+    "/dashboard/product_dashboard",
   ];
   const shouldHideNavbar =
     hideNavbarRoutes.includes(location.pathname) ||

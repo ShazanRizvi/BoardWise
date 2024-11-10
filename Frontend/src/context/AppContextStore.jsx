@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import AppContext from "./AppContext";
+
+
+
 const AppContextStore = ({ children }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [chatType, setChatType] = useState(null);
@@ -8,7 +11,6 @@ const AppContextStore = ({ children }) => {
     setChatType(type);
     setSelectedCard(card);
     setIsDrawerOpen(true);
-
   };
 
   const closeDrawer = () => {
@@ -189,22 +191,79 @@ const AppContextStore = ({ children }) => {
     },
   });
 
-
   // Animated Stepper
-  const [currentStep, setCurrentStep] = useState(1)
-  const steps = [
-    { title: "Step 1", description: "Personal Info", stepDescription: "Enter your personal information" },  
-    { title: "Step 2", description: "Create Organization", stepDescription: "Create your organization" },
-    { title: "Step 3", description: "Create Product", stepDescription: "Create your product" },
-    { title: "Step 4", description: "Create Project", stepDescription: "Create your project" },
-  ]
-  const handleNext = () => {
-    setCurrentStep((prev) => Math.min(prev + 1, steps.length))
-  }
+  const [currentStep, setCurrentStep] = useState(1);
+  const savedStep = parseInt(localStorage.getItem("currentStep")) || 1;
+  // const navigate = useNavigate();
+ 
 
-  const handlePrev = () => {
-    setCurrentStep((prev) => Math.max(prev - 1, 1))
-  }
+  const steps = useMemo(() => [
+    {
+      title: "Step 1",
+      description: "Personal Info",
+      stepDescription: "Enter your personal information",
+      stepRoute: "personal-info",
+    },
+    {
+      title: "Step 2",
+      description: "Create Organization",
+      stepDescription: "Create your organization",
+      stepRoute: "create-organization",
+    },
+    {
+      title: "Step 3",
+      description: "Create Product",
+      stepDescription: "Create your product",
+      stepRoute: "create-product",
+    },
+    {
+      title: "Step 4",
+      description: "Create Project",
+      stepDescription: "Create your project",
+      stepRoute: "create-project",
+    },
+  ], []);
+   // Save the current step in local storage whenever it changes
+   useEffect(() => {
+    localStorage.setItem("currentStep", currentStep);
+  }, [currentStep]);
+
+  // Handle navigation to the correct route based on the current step
+  const handleStepChange = (step) => {
+    setCurrentStep(step);
+    window.history.pushState(null, "", `/onboarding/${steps[step - 1].stepRoute}`);
+  };
+
+   // Reset the stepper on page refresh
+   useEffect(() => {
+    const handlePageRefresh = () => {
+      setCurrentStep(1);
+      localStorage.setItem("currentStep", 1);
+      window.history.pushState(null, "", `/onboarding/${steps[0].stepRoute}`);;
+    };
+    window.addEventListener("beforeunload", handlePageRefresh);
+
+    // Clean up the event listener
+    return () => {
+      window.removeEventListener("beforeunload", handlePageRefresh);
+    };
+  }, [steps]);
+
+    // Handle browser back and forward navigation
+    useEffect(() => {
+      const handlePopState = () => {
+        const currentRoute = window.location.pathname.split("/").pop();
+        const matchedStep = steps.findIndex(step => step.stepRoute === currentRoute) + 1;
+        setCurrentStep(matchedStep || 1);
+      };
+      window.addEventListener("popstate", handlePopState);
+  
+      // Clean up the event listener
+      return () => {
+        window.removeEventListener("popstate", handlePopState);
+      };
+    }, [steps]);
+ 
 
   return (
     <AppContext.Provider
@@ -221,8 +280,9 @@ const AppContextStore = ({ children }) => {
         selectedCard,
         currentStep,
         steps,
-        handleNext,
-        handlePrev,
+        setCurrentStep,
+        handleStepChange
+        
       }}
     >
       {children}

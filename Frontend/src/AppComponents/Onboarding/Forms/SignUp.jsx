@@ -2,46 +2,49 @@ import React, { useContext } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Formik, Field, Form, ErrorMessage } from "formik";
-// import * as Yup from "yup";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import * as Yup from "yup";
+import { CardFooter } from "@/components/ui/card";
 import { StepperControls } from "@/components/ui/animated-stepper";
 import AppContext from "@/context/AppContext";
+import { IoArrowBack } from "react-icons/io5";
+import { FiChevronRight } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 
-// Validation Schema using Yup
-// const validationSchema = Yup.object({
-//   firstname: Yup.string().when("mode", {
-//     is: (mode) => mode !== "login",
-//     then: Yup.string().required("First name is required"),
-//   }),
-//   lastname: Yup.string().when("mode", {
-//     is: (mode) => mode !== "login",
-//     then: Yup.string().required("Last name is required"),
-//   }),
-//   email: Yup.string().email("Invalid email address").required("Email is required"),
-//   password: Yup.string().min(8, "Password must be at least 8 characters").required("Password is required"),
-// });
+const validationSchema = Yup.object({
+  firstname: Yup.string().when({
+    then: Yup.string().required("First name is required"),
+  }),
+  lastname: Yup.string().when({
+    then: Yup.string().required("Last name is required"),
+  }),
+  email: Yup.string()
+    .email("Invalid email address")
+    .required("Email is required"),
+  password: Yup.string()
+    .min(8, "Password must be at least 8 characters")
+    .required("Password is required"),
+});
 
 const SignUp = () => {
+ 
 
-     const { currentStep, steps, handleNext, handlePrev } = useContext(AppContext);
+  const { currentStep, steps, handleStepChange } = useContext(AppContext);
+
+  const handleNext = () => {
+    if (currentStep < steps.length) handleStepChange(currentStep + 1);
+  };
+
+
+
   return (
     <div>
       <Formik
         initialValues={{
-          firstname: "",
-          lastname: "",
+          username: "",
           email: "",
           password: "",
         }}
-        // validationSchema={validationSchema}
+        //validationSchema={validationSchema}
         onSubmit={(values) => {
           console.log("Form values:", values);
         }}
@@ -50,40 +53,19 @@ const SignUp = () => {
           <Form>
             <div className="grid w-full items-center gap-4">
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="firstname">First name</Label>
+                <Label htmlFor="username">Username</Label>
                 <Field
                   id="firstname"
-                  name="firstname"
-                  placeholder="Tyler"
+                  name="username"
+                  placeholder="Tyler123"
                   type="text"
                   as={Input}
                   className={
-                    touched.firstname && errors.firstname
-                      ? "border-red-500"
-                      : ""
+                    touched.username && errors.username ? "border-red-500" : ""
                   }
                 />
                 <ErrorMessage
-                  name="firstname"
-                  component="div"
-                  className="text-red-500 text-sm"
-                />
-              </div>
-
-              <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="lastname">Last name</Label>
-                <Field
-                  id="lastname"
-                  name="lastname"
-                  placeholder="Durden"
-                  type="text"
-                  as={Input}
-                  className={
-                    touched.lastname && errors.lastname ? "border-red-500" : ""
-                  }
-                />
-                <ErrorMessage
-                  name="lastname"
+                  name="username"
                   component="div"
                   className="text-red-500 text-sm"
                 />
@@ -129,12 +111,18 @@ const SignUp = () => {
             </div>
 
             <CardFooter className="flex w-full">
-              <StepperControls
-                currentStep={currentStep}
-                totalSteps={steps.length}
-                onNext={handleNext}
-                onPrev={handlePrev}
-              />
+              <div className="flex justify-between gap-4 w-full">
+                
+                <button
+                  onClick={handleNext}
+                  // disabled={currentStep === totalSteps}
+                  className="px-4 py-2 w-full flex justify-center items-center text-sm font-medium rounded-md text-white bg-primary  hover:bg-primary/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <span className="gap-2">Next</span>
+                  {"   "}
+                  <FiChevronRight size={20} />
+                </button>
+              </div>
             </CardFooter>
           </Form>
         )}

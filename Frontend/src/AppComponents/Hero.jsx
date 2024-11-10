@@ -9,7 +9,7 @@ const Hero = () => {
   const subtitle = "A new and innovative way to manage and create your boards";
   const navigate = useNavigate();
   const handleGetStarted = () => {
-    navigate("/signup");
+    navigate("/onboarding");
   };
   return (
     <div className=" h-screen">

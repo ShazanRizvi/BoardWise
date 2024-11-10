@@ -10,11 +10,30 @@ import {
 } from "@/components/ui/card";
 import Stepper from "./Stepper";
 import AppContext from "../../context/AppContext";
+import SignUp from "./Forms/SignUp";
+import CreateOrganization from "./Forms/CreateOrganization";
+import CreateProduct from "./Forms/CreateProduct";
+import SignUpCreateProject from "./Forms/SignUpCreateProject";
 
 
-const OnboardingForm = ({ cardTitle, cardDescription, children }) => {
+
+const OnboardingForm = () => {
   const {currentStep, steps} = useContext(AppContext);
-  console.log("currentStep", currentStep);
+  const renderStepComponent = () => {
+    switch (currentStep) {
+      case 1:
+        return <SignUp />;
+      case 2:
+        return <CreateOrganization />;
+      case 3:
+        return <CreateProduct />;
+      case 4:
+        return <SignUpCreateProject />;
+      default:
+        return <SignUp />;
+    }
+  };
+  
   return (
     <div className="">
       <div className="flex items-center justify-start h-screen">
@@ -27,7 +46,7 @@ const OnboardingForm = ({ cardTitle, cardDescription, children }) => {
             <CardDescription>{steps[currentStep-1].stepDescription}</CardDescription>
           </CardHeader>
 
-          <CardContent>{children}</CardContent>
+          <CardContent>{renderStepComponent()}</CardContent>
         </Card>
       </div>
     </div>
