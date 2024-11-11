@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import {AnimatedTooltip} from '../ui/animated-tooltip'
 
 export const HoverEffect = ({
   items,
@@ -38,6 +39,14 @@ export const HoverEffect = ({
           <Card>
             <CardTitle>{item.title}</CardTitle>
             <CardDescription>{item.description}</CardDescription>
+            {item.people && (
+             <div className='flex mt-5'>
+              <AnimatedTooltip
+                items={item.people}
+                onPersonClick={(person) => console.log(person)}
+              />
+              </div>
+            )}
           </Card>
         </Link>
       ))}
@@ -77,7 +86,7 @@ export const CardDescription = ({
 }) => {
   return (
     (<p
-      className={cn("mt-8 text-zinc-600 tracking-wide leading-relaxed text-sm", className)}>
+      className={cn("mt-5 text-zinc-600 tracking-wide leading-relaxed text-sm", className)}>
       {children}
     </p>)
   );

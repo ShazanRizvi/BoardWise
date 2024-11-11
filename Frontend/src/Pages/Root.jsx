@@ -11,10 +11,13 @@ const Root = () => {
     "/dashboard/create_project",
     "/dashboard/project/:projectId",
     "/dashboard/product_dashboard",
+    "/dashboard/project_dashboard/:productId",
+    "/dashboard/organization/people_of_org"
   ];
   const shouldHideNavbar =
     hideNavbarRoutes.includes(location.pathname) ||
-    location.pathname.startsWith("/dashboard/project/");
+    location.pathname.startsWith("/dashboard/project/") ||
+    location.pathname.startsWith("/dashboard/project_dashboard/");
   console.log("shouldHideNavbar", shouldHideNavbar);
   return (
     <>

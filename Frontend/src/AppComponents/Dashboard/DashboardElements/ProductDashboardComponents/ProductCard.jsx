@@ -17,13 +17,13 @@ export const products = [
     title: "Product 1",
     description:
       "This product prevails for AI stuff",
-    link: "https://stripe.com",
+    link: "/dashboard/project_dashboard/1",
   },
   {
     title: "Netflix",
     description:
       "A streaming service that offers a wide variety of award-winning TV shows, movies, anime, documentaries, and more on thousands of internet-connected devices.",
-    link: "https://netflix.com",
+    link: "/dashboard/project_dashboard/2",
   },
   {
     title: "Google",

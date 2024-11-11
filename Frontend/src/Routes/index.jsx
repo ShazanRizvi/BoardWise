@@ -10,6 +10,8 @@ import CreateOrganization from "../AppComponents/Onboarding/Forms/CreateOrganiza
 import CreateProduct from "../AppComponents/Onboarding/Forms/CreateProduct";
 import SignUpCreateProject from "../AppComponents/Onboarding/Forms/SignUpCreateProject";
 import ProductDashboard from "../AppComponents/Dashboard/DashboardElements/ProductDashboard";
+import ProjectDashboard from "../AppComponents/Dashboard/DashboardElements/ProjectDashboard";
+import PeopleInOrg from "../AppComponents/Dashboard/PeopleInOrg";
 
 const appRouter = createBrowserRouter([{
   path: "/",
@@ -63,12 +65,21 @@ const appRouter = createBrowserRouter([{
 
       },
       {
+        path: "/dashboard/project_dashboard/:productId",
+        element:<ProjectDashboard/>
+
+      },
+      {
         path: "/dashboard/create_project",
         element:<CreateProject/>
       },
       {
         path:'project/:projectId',
         element:<ProjectBoard/>
+      },
+      {
+        path:'organization/people_of_org',
+        element:<PeopleInOrg/>
       }
     ],
   },

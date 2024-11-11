@@ -21,8 +21,8 @@ export function DashboardSidebar() {
       ),
     },
     {
-      label: "Profile",
-      href: "/profile",
+      label: "People",
+      href: "/dashboard/organization/people_of_org",
       icon: (
         <IconUserBolt className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
@@ -36,7 +36,7 @@ export function DashboardSidebar() {
     },
     {
       label: "Logout",
-      href: "#",
+      href: "/onboarding",
       icon: (
         <IconArrowLeft className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
