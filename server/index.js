@@ -3,10 +3,12 @@ const session = require("express-session");
 const RedisStore = require("connect-redis").default;
 const redis = require("redis");
 
+
 const authRoutes = require("./src/routes/authRoutes");
 const organizationRoutes = require("./src/routes/organizationRoutes");
 const productRoutes = require("./src/routes/productRoutes");
 const projectRoutes = require("./src/routes/projectRoutes");
+const userRoutes = require('./src/routes/userRoutes');
 
 const cors = require("cors");
 const path = require("path");
@@ -45,6 +47,7 @@ redisClient.connect().then(() => {
     app.use("/api/products", productRoutes);
     app.use("/api/projects", projectRoutes);
     app.use("/api/auth", authRoutes);
+    app.use("/api/current_user", userRoutes);
     app.get("/", (req, res) => {
         res.send("Welcome to Boardwise server");
     });
