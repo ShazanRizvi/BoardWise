@@ -1,5 +1,6 @@
 import React from "react";
 import Navbar from "../AppComponents/Navbar";
+import { Toaster } from "react-hot-toast";
 import { Outlet, useLocation } from "react-router-dom";
 
 const Root = () => {
@@ -22,6 +23,7 @@ const Root = () => {
   return (
     <>
       {!shouldHideNavbar && <Navbar />}
+      <div><Toaster/></div>
       <Outlet />
     </>
   );

@@ -1,34 +1,39 @@
 import axios from 'axios';
-import { apiBaseUrl } from '../utils/constants';
+import { apiBaseUrl } from '../utils/Constants';
 import toast from "react-hot-toast";
 
-const callAPI = async (method, url, data, headers={}) => {
+const callAPI = async (method, url, data = {}, headers = {}) => {
   try {
     const options = {
       method,
       url: `${apiBaseUrl}${url}`,
       headers: {
-        ...headers,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        ...headers
       },
+      withCredentials: true, // Include credentials for session-based auth
     };
 
-    if (method === 'POST' || method === 'PUT' || method === 'PATCH') {
+    if (['POST', 'PUT', 'PATCH'].includes(method.toUpperCase())) {
       options.data = data;
     }
-   
 
     const response = await axios(options);
-    //console.log("response data from axios call",response.data)
-    if(response?.data?.message){
-      toast.success(response?.data?.message)
+
+    // Show success message if it exists
+    if (response?.data?.message) {
+      toast.success(response.data.message);
     }
-    
-    return response?.data;
-    
-    
+
+    return response.data;
+
   } catch (error) {
-     toast.error(error.message);
-    throw error;
-    
+    // Improved error handling to show server-provided error message, if available
+    const errorMessage = error.response?.data?.message || error.message || 'An error occurred';
+    toast.error(errorMessage);
+    throw error; // Rethrow the error for further handling if needed
   }
 };
+
+export default callAPI;

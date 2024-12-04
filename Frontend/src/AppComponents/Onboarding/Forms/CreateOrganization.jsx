@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Formik, Field, Form, ErrorMessage } from "formik";
@@ -8,6 +8,8 @@ import AppContext from "@/context/AppContext";
 import { IoArrowBack } from "react-icons/io5";
 import { FiChevronRight } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import callAPI from "../../../http/axios";
+import toast from "react-hot-toast";
 
 const validationSchema = Yup.object({
   firstname: Yup.string().when("mode", {
@@ -28,9 +30,34 @@ const validationSchema = Yup.object({
 
 const CreateOrganization = () => {
   const { currentStep, steps, handleStepChange } = useContext(AppContext);
+  const [loading, setLoading] = useState(false);
+  const token = localStorage.getItem("access_token")
 
   const handleNext = () => {
     if (currentStep < steps.length) handleStepChange(currentStep + 1);
+  };
+
+  const handleSubmit = async (values) => {
+    setLoading(true);
+    try {
+      const response = await callAPI(
+        "POST",
+        "/organizations/createorg",
+        values,
+        {
+          Authorization: `Bearer ${token}`, // Add the token to the Authorization header
+        }
+      );
+      if (response) {
+        toast.success("User created successfully");
+        handleNext(); // Move to the next step only after successful API call
+      }
+    } catch (error) {
+      toast.error("Error creating user");
+      console.error("API Error:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handlePrev = () => {
@@ -45,16 +72,14 @@ const CreateOrganization = () => {
           email: "",
           password: "",
         }}
-        validationSchema={validationSchema}
-        onSubmit={(values) => {
-          console.log("Form values:", values);
-        }}
+        //validationSchema={validationSchema}
+        onSubmit={handleSubmit}
       >
-        {({ errors, touched }) => (
+        {({ errors, touched, isSubmitting }) => (
           <Form>
             <div className="grid w-full items-center gap-4">
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="username">Organization Name</Label>
+                <Label htmlFor="organizationName">Organization Name</Label>
                 <Field
                   id="organizationName"
                   name="organizationName"
@@ -75,12 +100,12 @@ const CreateOrganization = () => {
               </div>
 
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="orgLogo">Organization Logo</Label>
+                <Label htmlFor="orgLogo">Organization Logo URL</Label>
                 <Field
                   id="orgLogo"
                   name="orgLogo"
-                  placeholder="Choose your organization logo"
-                  type="file"
+                  placeholder="Enter the URL for your organization logo"
+                  type="url"
                   as={Input}
                   className={
                     touched.orgLogo && errors.orgLogo ? "border-red-500" : ""
@@ -104,11 +129,14 @@ const CreateOrganization = () => {
                   <IoArrowBack size={20} color="#8b5cf6" />
                 </button>
                 <button
-                  onClick={handleNext}
+                  type="submit"
+                  disabled={isSubmitting || loading}
                   // disabled={currentStep === totalSteps}
                   className="px-4 py-2 w-full flex justify-center items-center text-sm font-medium rounded-md text-white bg-primary  hover:bg-primary/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <span className="gap-2">Next</span>
+                  <span className="gap-2">
+                    {loading ? "Creating..." : "Next"}
+                  </span>
                   {"   "}
                   <FiChevronRight size={20} />
                 </button>

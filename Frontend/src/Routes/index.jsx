@@ -12,6 +12,8 @@ import SignUpCreateProject from "../AppComponents/Onboarding/Forms/SignUpCreateP
 import ProductDashboard from "../AppComponents/Dashboard/DashboardElements/ProductDashboard";
 import ProjectDashboard from "../AppComponents/Dashboard/DashboardElements/ProjectDashboard";
 import PeopleInOrg from "../AppComponents/Dashboard/PeopleInOrg";
+import Login from "../AppComponents/Login";
+import ProtectedRoutes from "./ProtectedRoutes";
 
 const appRouter = createBrowserRouter([{
   path: "/",
@@ -24,6 +26,10 @@ const appRouter = createBrowserRouter([{
     {
       path: "home",
       element: <Home />,
+    },
+    {
+      path: "login",
+      element: <Login/>
     },
     {
      path: "onboarding",
@@ -61,25 +67,25 @@ const appRouter = createBrowserRouter([{
       },
       {
         path: "/dashboard/product_dashboard",
-        element:<ProductDashboard/>
+        element:<ProtectedRoutes><ProductDashboard/></ProtectedRoutes>
 
       },
       {
         path: "/dashboard/project_dashboard/:productId",
-        element:<ProjectDashboard/>
+        element:<ProtectedRoutes><ProjectDashboard/></ProtectedRoutes>
 
       },
       {
         path: "/dashboard/create_project",
-        element:<CreateProject/>
+        element:<ProtectedRoutes><CreateProject/></ProtectedRoutes>
       },
       {
         path:'project/:projectId',
-        element:<ProjectBoard/>
+        element:<ProtectedRoutes><ProjectBoard/></ProtectedRoutes>
       },
       {
         path:'organization/people_of_org',
-        element:<PeopleInOrg/>
+        element:<ProtectedRoutes><PeopleInOrg/></ProtectedRoutes>
       }
     ],
   },
