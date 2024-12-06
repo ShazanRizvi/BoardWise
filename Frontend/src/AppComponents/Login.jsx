@@ -10,9 +10,11 @@ import callAPI from "@/http/axios";
 import { toast } from "react-hot-toast";
 import LoaderWhite from "../utils/LoaderWhite";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (values) => {
     setLoading(true);
@@ -23,13 +25,15 @@ const Login = () => {
       if (response && response.token) {
         localStorage.setItem("access_token", response?.token),
           toast.success(response?.message);
+
+          navigate("/dashboard");
       }
     } catch (error) {
       toast.error("Error creating user");
       console.error("API Error:", error);
     } finally {
       const tokenFromStorage = localStorage.getItem("access_token");
-      console.log("token from storage for login", tokenFromStorage);
+      //console.log("token from storage for login", tokenFromStorage);
       setLoading(false);
     }
   };
@@ -205,13 +209,13 @@ const Login = () => {
                         <button
                           type="submit"
                           // onClick={handleSubmit}
-                          //disabled={isSubmitting || loading}
+                          disabled={isSubmitting || loading}
                           // disabled={currentStep === totalSteps}
                           className="px-4 py-2 w-full flex justify-center items-center text-sm font-medium rounded-md text-white bg-primary  hover:bg-primary/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           <span className="gap-2">
                             {loading ? (
-                              <LoaderWhite width={20} height={20} />
+                              <LoaderWhite width={100} height={100} />
                             ) : (
                               <div className="flex">
                                 Login <FiChevronRight size={20} />

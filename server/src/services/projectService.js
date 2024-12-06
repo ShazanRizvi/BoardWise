@@ -12,3 +12,20 @@ exports.createProject = async (productId, organizationId, userId, projectName) =
         },
     });
 };
+
+exports.getProjects = async (userId) => {
+    const projects = await prisma.project.findMany({
+        where: {
+          users: {
+            some: {
+              id: userId,
+            },
+          },
+        },
+        include: {
+          product: true, // Include product details if needed
+          organization: true, // Include organization details if needed
+        },
+      });
+      return projects;
+};

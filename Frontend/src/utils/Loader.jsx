@@ -1,6 +1,12 @@
 import * as React from "react";
 const Loader = (props) => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 150">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 300 150"
+    width={props.width || 50} // Optional: Customize width via props
+    height={props.height || 50} // Optional: Customize height via props
+    {...props}
+  >
     <path
       fill="none"
       stroke="#8B5CF6"

@@ -2,7 +2,7 @@
 const userService = require('../services/userService');
 
 exports.getUserDetails = async (req, res) => {
-    const userId = req.session.userId;  // Assuming userId is stored in the session
+    const userId = req.session.user.id;  // Assuming userId is stored in the session
 
     if (!userId) {
         return res.status(400).json({ message: 'User not authenticated' });

@@ -18,19 +18,42 @@ exports.createOrganization = async (req, res) => {
   }
 };
 
-exports.getOrganizationById = async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const organization = await organizationService.getById(id);
+// exports.getOrganizationById = async (req, res, next) => {
+//   try {
+//     const { id } = req.params;
+//     const organization = await organizationService.getById(id);
 
-    if (!organization) {
-      return res.status(404).json({ message: "Organization not found" });
+//     if (!organization) {
+//       return res.status(404).json({ message: "Organization not found" });
+//     }
+
+//     res.status(200).json(organization);
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+exports.getOrganization = async (req, res) => {
+  try {
+    // Retrieve the user ID from the session
+    const userId = req.session.user.id;
+
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized. No user in session." });
     }
 
-    res.status(200).json(organization);
+    // Fetch the user's organization
+    const organization = await organizationService.getOrganization(userId);
+
+    if (!organization) {
+      return res.status(404).json({ message: "No organization found for the user." });
+    }
+
+    res.status(200).json({ message: "Organization retrieved successfully", organization });
   } catch (error) {
-    next(error);
+    console.error("Error fetching organization:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 

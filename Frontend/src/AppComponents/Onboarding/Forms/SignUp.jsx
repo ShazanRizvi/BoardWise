@@ -40,7 +40,7 @@ const SignUp = () => {
       if (response && response.token) {
         localStorage.setItem("access_token", response.token),
           toast.success("User created successfully");
-        handleNext(); // Move to the next step only after successful API call
+        handleNext(); 
       }
     } catch (error) {
       toast.error("Error creating user");

@@ -18,3 +18,23 @@ exports.createProject = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 };
+
+exports.getProjects = async (req, res) => {
+    try {
+      // Retrieve the user ID from the session
+      const userId = req.session.user.id;
+  
+      if (!userId) {
+        return res.status(401).json({ message: "Unauthorized. No user in session." });
+      }
+  
+      // Fetch the user's projects
+     const projects = await projectService.getProjects(userId);
+  
+      res.status(200).json({ message: "Projects retrieved successfully", projects });
+    } catch (error) {
+      console.error("Error fetching projects:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  };
+  

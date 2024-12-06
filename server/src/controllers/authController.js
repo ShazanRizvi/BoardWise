@@ -37,6 +37,7 @@ exports.login = async (req, res) => {
     const organizationId = user.organizationId;
 
     req.session.organizationId = organizationId;
+    req.session.user=user;
 
     res.status(200).json({ message: "Login successful", token, user });
   } catch (error) {

@@ -1,14 +1,31 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-exports.getById = async (id) => {
-     return await prisma.organization.findUnique({
-         where: {
-             id: id,
-         },
-     });
- };
+// exports.getById = async (id) => {
+//      return await prisma.organization.findUnique({
+//          where: {
+//              id: id,
+//          },
+//      });
+//  };
 
+exports.getOrganization = async (userId) => {
+    const organization = await prisma.organization.findFirst({
+        where: {
+          users: {
+            some: {
+              id: userId,
+            },
+          },
+        },
+        include: {
+          users: true, // Include users if needed
+          products: true, // Include products if needed
+          projects: true, // Include projects if needed
+        },
+      });
+      return organization;
+}
  exports.createOrganization = async (userId, organizationName, orgLogo) => {
     // Step 1: Create the organization
     const organization = await prisma.organization.create({
