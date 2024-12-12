@@ -13,7 +13,7 @@ const multiSelectVariants = cva(
   {
     variants: {
       variant: {
-        default: "border-foreground/10 text-foreground bg-red-500 hover:bg-card/80 hover:border-foreground/20",
+        default: "border-foreground/10 text-pimary-600 bg-primary-100 rounded-lg hover:bg-card/80 hover:border-foreground/20",
         secondary: "border-foreground/10 bg-secondary-500 text-secondary-foreground hover:bg-secondary/80",
         destructive: "border-transparent bg-red-600 text-destructive-foreground hover:bg-destructive/80",
         inverted: "inverted",
@@ -99,7 +99,7 @@ export const MultiSelect = React.forwardRef(
             {...props}
             onClick={handleTogglePopover}
             className={cn(
-              "flex w-full text-black bg-background font-normal p-1 rounded-md border border-primary-100 min-h-10 h-auto items-center justify-between hover:bg-primary-50",
+              "flex w-full text-black bg-primary-50/50 font-normal p-1 rounded-md  min-h-10 h-auto items-center justify-between hover:bg-primary-50",
               className
             )}
           >
@@ -161,7 +161,7 @@ export const MultiSelect = React.forwardRef(
               </div>
             ) : (
               <div className="flex items-center justify-between w-full mx-auto">
-                <span className="text-sm text-muted-foreground mx-3">{placeholder}</span>
+                <span className="text-sm text-slate-500/70 mx-3">{placeholder}</span>
                 <ChevronDown className="h-4 cursor-pointer text-muted-foreground mx-2" />
               </div>
             )}

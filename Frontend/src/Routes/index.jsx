@@ -13,6 +13,7 @@ import ProductDashboard from "../AppComponents/Dashboard/DashboardElements/Produ
 import ProjectDashboard from "../AppComponents/Dashboard/DashboardElements/ProjectDashboard";
 import PeopleInOrg from "../AppComponents/Dashboard/PeopleInOrg";
 import Login from "../AppComponents/Login";
+import ActivationForm from "../Pages/ActivationForm";
 import ProtectedRoutes from "./ProtectedRoutes";
 
 const appRouter = createBrowserRouter([{
@@ -89,6 +90,10 @@ const appRouter = createBrowserRouter([{
       }
     ],
   },
+  {
+    path: 'activate-account',
+    element: <ActivationForm />,
+  }
   ],
 }]);
 

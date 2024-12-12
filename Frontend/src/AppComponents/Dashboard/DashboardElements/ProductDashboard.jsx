@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import ProductCard from "./ProductDashboardComponents/ProductCard";
 import { Button } from "@/components/ui/Button";
 import { FaPlus } from "react-icons/fa6";
+import { FcGenealogy } from "react-icons/fc";
 import AddEditTaskDialog from "../DashboardElements/ProjectBoardComponents/AddEditTaskDialog";
+import AddProductFrom from "./ProductDashboardComponents/AddProductFrom";
 
 const ProductDashboard = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -10,6 +12,7 @@ const ProductDashboard = () => {
   const handleDialogOpen = () => {
     setIsDialogOpen((prev) => !prev);
   };
+  
 
   return (
     <div className="m-4 px-8 w-full">
@@ -33,16 +36,17 @@ const ProductDashboard = () => {
             <span className="mr-1">Add Product</span>
           </Button>
         </div>
-        
       </div>
       <div>
-          <AddEditTaskDialog
-            isDialogOpen={isDialogOpen}
-            setIsDialogOpen={setIsDialogOpen}
-            Title="Add Product"
-            icon={<FaPlus size={24} />}
-          ></AddEditTaskDialog>
-        </div>
+        <AddEditTaskDialog
+          isDialogOpen={isDialogOpen}
+          setIsDialogOpen={setIsDialogOpen}
+          Title="Add Product"
+          icon={<FcGenealogy size={24} />}
+        >
+          <AddProductFrom />
+        </AddEditTaskDialog>
+      </div>
       <div>
         <ProductCard />
       </div>

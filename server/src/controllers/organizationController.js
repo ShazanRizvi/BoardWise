@@ -2,7 +2,7 @@ const organizationService = require("../services/organizationService");
 
 exports.createOrganization = async (req, res) => {
   const { organizationName, orgLogo } = req.body;
-  const userId = req.session.userId; // Retrieve userId from session
+  const userId = req.session.user.id; // Retrieve userId from session
   console.log('userId', userId);
 
   if (!userId) {

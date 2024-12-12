@@ -1,14 +1,27 @@
 const authService = require("../services/authService");
+require("dotenv").config();
 
 exports.createInvite = async (req, res) => {
-  const { emailAddress } = req.body;
+  const { emailAddress, userRole, userOrgPosition } = req.body;
   const organizationId = req.session.organizationId;
+  const adminId = req.session.user.id;
 
   try {
-    const inviteLink = await authService.createInvite(
+    // const inviteLink = await authService.createInvite(
+    //   emailAddress,
+    //   organizationId
+    // );
+    const { token, expiresAt } = await authService.createInvite(
       emailAddress,
-      organizationId
+      userRole,
+      userOrgPosition,
+      organizationId,
+      adminId
     );
+    const inviteLink = `${process.env.BOARDWISE_FRONTEND_HOST}/activate-account?token=${token}`;
+    console.log("Invite Link:", inviteLink);
+
+
     res
       .status(201)
       .json({ message: "Invite created successfully", inviteLink });
@@ -37,7 +50,7 @@ exports.login = async (req, res) => {
     const organizationId = user.organizationId;
 
     req.session.organizationId = organizationId;
-    req.session.user=user;
+    req.session.user = user;
 
     res.status(200).json({ message: "Login successful", token, user });
   } catch (error) {
@@ -64,6 +77,7 @@ exports.signUp = async (req, res) => {
 
     // Set userId in the session after successful signup
     req.session.userId = user.id; // Use `user.id` from the nested `user` object
+    req.session.user = user;
     console.log("User ID stored in session:", req.session.userId);
     res.status(201).json({ message: "User created successfully", user, token });
   } catch (error) {

@@ -9,13 +9,27 @@ import { FiSend } from "react-icons/fi";
 import { HiOutlinePaperClip } from "react-icons/hi2";
 import MessageBubble from "./MessageBubble/MessageBubble";
 import "./CSS/TaskChat.css";
+import Loader from "../../../../../utils/Loader";
 
 const TaskChat = ({ card }) => {
-  const { closeDrawer } = useContext(AppContext);
+  const { closeDrawer,isDrawerOpen } = useContext(AppContext);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const messagesEndRef = useRef(null);
   const messageContainerRef = useRef(null);
+  const [loading, setLoading] = useState(false);
+  
+  const ChatUILoading=()=>{
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }
+
+  useEffect(() => { 
+    ChatUILoading();
+
+  }, [isDrawerOpen]);
 
   const handleSendMessage = () => {
     if (input.trim()) {
@@ -34,8 +48,9 @@ const TaskChat = ({ card }) => {
       messagesEndRef?.current?.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages]);
-  return (
-    <div className="flex flex-col h-screen">
+  return  loading?(<div className=" flex justify-center items-center h-screen w-full">
+      <Loader width={100} height={100} />
+    </div>):(<div className="flex flex-col h-screen">
       <div className="flex justify-between">
         <Button
           onClick={closeDrawer}
@@ -88,8 +103,8 @@ const TaskChat = ({ card }) => {
       </div>
 
       {/* Chat input */}
-      <div className=" fixed bottom-0 left-0 right-0  p-4 bg-transparent">
-        <div className="flex items-center w-full border border-gray-400  rounded-full overflow-hidden">
+      <div className=" fixed bottom-0  w-1/3 right-0  p-4">
+        <div className="flex items-center  border border-gray-400  rounded-full overflow-hidden">
           <div className="w-10 h-10 ml-4 flex justify-center items-center ">
             <HiOutlinePaperClip size={24} color="grey" />
           </div>
@@ -109,8 +124,9 @@ const TaskChat = ({ card }) => {
           </Button>
         </div>
       </div>
-    </div>
-  );
+    </div>)
+    
+  
 };
 
 export default TaskChat;

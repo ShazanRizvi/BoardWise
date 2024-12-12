@@ -1,8 +1,8 @@
 const productService = require('../services/productService');
 
 exports.createProduct = async (req, res) => {
-    const { productName } = req.body;
-    const userId = req.session.userId;
+    const { productName, description } = req.body;
+    const userId = req.session.user.id;
     const organizationId = req.session.organizationId;
 
     if (!userId || !organizationId) {
@@ -10,7 +10,7 @@ exports.createProduct = async (req, res) => {
     }
 
     try {
-        const product = await productService.createProduct(organizationId, userId, productName);
+        const product = await productService.createProduct(organizationId, userId, productName, description);
         req.session.productId = product.id; // Store productId in session
         res.status(201).json({ message: 'Product created successfully', product });
     } catch (error) {

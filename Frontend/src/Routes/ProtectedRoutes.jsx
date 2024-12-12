@@ -1,55 +1,39 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import Loader from "../utils/Loader";
+import {jwtDecode} from "jwt-decode";
 
-const ProtectedRoutes = ({ children }) => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+const ProtectedRoute = ({ children }) => {
+  const token = localStorage.getItem("access_token");
   const location = useLocation();
 
-  useEffect(() => {
-    const token = localStorage.getItem("access_token");
-    const validateToken = async () => {
-      setIsLoading(true);
-      try {
-        if (token) {
-          setIsAuthenticated(true);
-        } else {
-          setIsAuthenticated(false);
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    validateToken();
-  }, []);
-
-  if (isLoading) {
-    // Show loading animation while token is being checked
+  // Check if token exists
+  if (!token) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <Loader />
-      </div>
+      <Navigate to="/login" state={{ from: location }} replace />
     );
   }
 
-  if (!isAuthenticated) {
-    
-    return (
-     <>
-     <Navigate to="/home" state={{ from: location }} replace />;
-     <Loader />
-     </>
-    
-    
-)
-    
+  try {
+    // Decode the token and check expiration
+    const decodedToken =jwtDecode(token);
+    const currentTime = Math.floor(Date.now() / 1000);
 
+    if (decodedToken.exp < currentTime) {
+      // Token has expired
+      localStorage.removeItem("access_token"); // Clear the expired token
+      return (
+        <Navigate to="/login" state={{ from: location }} replace />
+      );
+    }
+  } catch (error) {
+    console.error("Token validation error:", error);
+    return (
+      <Navigate to="/login" state={{ from: location }} replace />
+    );
   }
 
-  // Render protected content if authenticated
+  // Token is valid, render the children
   return children;
 };
 
-export default ProtectedRoutes;
+export default ProtectedRoute;

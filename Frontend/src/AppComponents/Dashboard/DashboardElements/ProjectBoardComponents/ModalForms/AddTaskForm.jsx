@@ -7,7 +7,7 @@ import { MultiSelect } from "@/components/ui/multi-select";
 import { Textarea } from "@/components/ui/textarea";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import "./AddTaskForm.css"
+import "./AddTaskForm.css";
 
 const AddTaskForm = () => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -94,8 +94,6 @@ const AddTaskForm = () => {
               />
             </div>
 
-           
-
             <div className="w-full mt-2">
               <Label>Task Members</Label>
               <MultiSelect
@@ -143,6 +141,5 @@ const AddTaskForm = () => {
     </Formik>
   );
 };
-
 
 export default AddTaskForm;

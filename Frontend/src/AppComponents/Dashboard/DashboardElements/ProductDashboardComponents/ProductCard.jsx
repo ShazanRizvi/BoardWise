@@ -9,6 +9,14 @@ const ProductCard = () => {
   const [loading, setLoading] = useState(null);
   const navigate = useNavigate();
 
+  //Move to utils afterwards
+  const truncateText = (text, maxLength) => {
+    if (!text) return ""; // Handle cases where the text is null or undefined
+    return text.length > maxLength
+      ? `${text.substring(0, maxLength)}...`
+      : text; 
+  };
+
   useEffect(() => {
     const getProducts = async () => {
       setLoading(true);
@@ -16,7 +24,7 @@ const ProductCard = () => {
         const response = await callAPI("GET", "/products/products", null, {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         });
-        console.log("response", response?.products);
+
         setProducts(response?.products);
       } catch (error) {
         console.error("Error fetching user details:", error);
@@ -28,17 +36,19 @@ const ProductCard = () => {
     getProducts();
   }, [navigate]);
 
-  console.log("products", products);
-
-  
-
   return loading ? (
     <div className=" flex justify-center items-center h-screen w-full">
       <Loader width={100} height={100} />
     </div>
   ) : (
     <div className="max-w-full mx-auto w-full">
-      <HoverEffect items={products?.map((item)=>({title:item?.productName, description:item.organization.organizationName}))} />
+      <HoverEffect
+        items={products?.map((item) => ({
+          title: item?.productName,
+          description: truncateText(item?.description, 100),
+          link: `/dashboard/project_dashboard/${item?.id}`,
+        }))}
+      />
     </div>
   );
 };
