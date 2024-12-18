@@ -7,7 +7,13 @@ exports.createProduct = async (organizationId, userId, productName, description)
       productName,
       description,
       organization: { connect: { id: organizationId } },
-      users: { connect: { id: userId } },
+      users: {
+        create: [
+          {
+            user: { connect: { id: userId } },
+          },
+        ],
+      },
     },
   });
 };
@@ -17,14 +23,30 @@ exports.getProducts = async (userId) => {
     where: {
       users: {
         some: {
-          id: userId,
+          userId: userId, // Match the userId in ProductAccess
         },
       },
     },
     include: {
-      projects: true, // Include projects if needed
-      organization: true, // Include organization details if needed
+      projects: true, // Include associated projects
+      organization: true, // Include organization details
+      users: {
+        include: {
+          user: true, // Include user details from ProductAccess
+        },
+      },
     },
   });
   return products;
 };
+
+exports.addUserToProduct = async (userId, productId, accessLevel) => {
+  const productsofUser=await prisma.productAccess.create({
+    data: {
+      userId,
+      productId,
+      accessLevel,
+    },
+  });
+  return productsofUser;
+}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import AppContext from "./AppContext";
+import { set } from "date-fns";
 
 
 
@@ -7,6 +8,8 @@ const AppContextStore = ({ children }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [chatType, setChatType] = useState(null);
   const [selectedCard, setSelectedCard] = useState(null);
+
+  const [invitedUserEmail, setInvitedUserEmail] = useState("");
   const openDrawerWithChat = (type, card) => {
     setChatType(type);
     setSelectedCard(card);
@@ -281,7 +284,9 @@ const AppContextStore = ({ children }) => {
         currentStep,
         steps,
         setCurrentStep,
-        handleStepChange
+        handleStepChange,
+        invitedUserEmail,
+        setInvitedUserEmail,
         
       }}
     >

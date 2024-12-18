@@ -3,18 +3,39 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 exports.createProject = async (productId, organizationId, userId, projectName, description) => {
-    return await prisma.project.create({
-        data: {
-            projectName,
-            description,
-            product: { connect: { id: productId } },            // Connect project to a single product
-            organization: { connect: { id: organizationId } },  // Link project to organization
-            users: { connect: { id: userId } }                  // Link project to the creating user(s)
+  const project = await prisma.project.create({
+    data: {
+        projectName,
+        description,
+        product: { connect: { id: productId } }, // Connect the project to the product
+        organization: { connect: { id: organizationId } }, // Link project to organization
+    },
+    include: {
+        product: true, // Include the associated product in the response
+    },
+});
+
+// Step 2: Create ProjectAccess
+await prisma.projectAccess.create({
+    data: {
+        canEdit:true, // Adjust the access level as needed
+        user: { connect: { id: userId } }, // Link the user
+        project: { connect: { id: project.id } }, // Link the project
+    },
+});
+
+// Step 3: Return the project details, including associated data
+return prisma.project.findUnique({
+    where: { id: project.id },
+    include: {
+        product: true, // Include associated product
+        users: {
+            include: {
+                user: true, // Include user details from ProjectAccess
+            },
         },
-        include: {
-          product: true, // Include the associated product in the response
-      },
-    });
+    },
+});
 };
 
 exports.getProjects = async (userId) => {
@@ -44,3 +65,14 @@ exports.getProjectsByProduct = async (productId) => {
   });
   return projects;
 }
+
+exports.addUserToProject = async (userId, projectId, accessLevel) => {
+  const projectofUser = await prisma.projectAccess.create({
+    data: {
+      userId,
+      projectId,
+      accessLevel,
+    },
+  });
+  return projectofUser;
+};

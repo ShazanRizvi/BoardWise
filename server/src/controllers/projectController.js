@@ -81,3 +81,27 @@ exports.getProjectByProduct = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+exports.addUserToProject = async (req, res) => {
+  const { userId, projectId, accessLevel } = req.body;
+  const adminId = req.session.user.id; // Admin ID from the session
+
+  try {
+    // Ensure the user making the request is an Admin
+    const adminRoles = await prisma.projectAccess.findFirst({
+      where: { userId: adminId, projectId, accessLevel: 'Admin' },
+    });
+
+    if (!adminRoles) {
+      return res.status(403).json({ message: 'Only admins can add users to projects.' });
+    }
+
+    // Add the user to the project
+    const projectAccess = await projectService.addUserToProject(userId, projectId, accessLevel);
+
+    res.status(201).json({ message: 'User added to project successfully', projectAccess });
+  } catch (error) {
+    console.error('Error adding user to project:', error.message);
+    res.status(500).json({ message: 'Error adding user to project' });
+  }
+};

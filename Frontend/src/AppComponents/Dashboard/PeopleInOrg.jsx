@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/Button";
 import { IconCopy } from "@tabler/icons-react";
 import toast from "react-hot-toast";
@@ -18,25 +18,45 @@ import InvitePeopleForm from "./DashboardElements/ProjectBoardComponents/ModalFo
 import { GoPeople } from "react-icons/go";
 import SideDrawer from "./DashboardElements/ProjectBoardComponents/SideDrawer";
 import AppContext from "../../context/AppContext";
+import callAPI from "@/http/axios";
+import Loader from "@/utils/Loader";
 
 const PeopleInOrg = () => {
-  const [copied, setCopied] = useState(false);
-  const { isDrawerOpen, closeDrawer, setIsDrawerOpen} = useContext(AppContext);
+  const { isDrawerOpen, closeDrawer, setIsDrawerOpen } = useContext(AppContext);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const [usersOfOrg, setUsersOfOrg] = useState([]);
+  const [copiedUserId, setCopiedUserId] = useState(null);
+
+  useEffect(() => {
+    const fetchallUsersofOrg = async () => {
+      setLoading(true);
+      try {
+        const response = await callAPI("GET", `/organizations/users`, null, {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        });
+        setUsersOfOrg(response?.users);
+        console.log("response", response);
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchallUsersofOrg();
+  }, [navigate]);
 
   const handleDrawrOpen = () => {
     setIsDrawerOpen(true);
-  }
+  };
 
-
-  const handleCopy = async () => {
+  const handleCopy = async (inviteLink, userId) => {
     try {
-      const textToCopy =
-        "http://localhost:3000/invite/c8ae718543b65830cee34b82078b379a79a500511501959deaf1e27217e69cea";
-      await navigator.clipboard.writeText(textToCopy);
-      setCopied(true);
+      await navigator.clipboard.writeText(inviteLink);
+      setCopiedUserId(userId);
       toast.success("Copied to clipboard");
 
-      setTimeout(() => setCopied(false), 2000);
+      setTimeout(() => setCopiedUserId(null), 2000);
     } catch (err) {
       console.error("Failed to copy text:", err);
     }
@@ -62,54 +82,72 @@ const PeopleInOrg = () => {
           </div>
         </div>
         <div>
-          <SideDrawer isOpen={isDrawerOpen} closeDrawer={closeDrawer}><InvitePeopleForm /></SideDrawer>
-          
-            
-          
+          <SideDrawer isOpen={isDrawerOpen} closeDrawer={closeDrawer}>
+            <InvitePeopleForm />
+          </SideDrawer>
         </div>
 
-        <div className="mt-4 max-w-7xl ">
-          <Table className=" bg-primary-50">
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[100px]">Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead className="text-center">Invite Link</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
-                <TableCell className="font-medium">Syed M</TableCell>
-                <TableCell>syed@gmail.com</TableCell>
-                <TableCell>Admin</TableCell>
-
-                <TableCell>
-                  <Button variant="ghost" onClick={handleCopy}>
-                    <span>
-                      <IconCopy stroke={2} />
-                    </span>{" "}
-                    <span>{copied ? "Copied!" : "Copy Invite"}</span>
-                  </Button>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="font-medium">Syed M</TableCell>
-                <TableCell>syed@gmail.com</TableCell>
-                <TableCell>Admin</TableCell>
-
-                <TableCell>
-                  <Button variant="ghost" onClick={handleCopy}>
-                    <span>
-                      <IconCopy stroke={2} />
-                    </span>{" "}
-                    <span>{copied ? "Copied!" : "Copy Invite"}</span>
-                  </Button>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </div>
+        {loading ? (
+          <div className=" flex justify-center items-center h-screen w-full">
+            <Loader width={100} height={100} />
+          </div>
+        ) : (
+          <div className="mt-4 max-w-7xl ">
+            <Table className=" bg-primary-50">
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[100px]">Name</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Role</TableHead>
+                  <TableHead>Position</TableHead>
+                  <TableHead className="text-center">Invite Link</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {usersOfOrg.map((user) => (
+                  <TableRow key={user.id}>
+                    <TableCell className="font-medium">
+                      {user.username}
+                    </TableCell>
+                    <TableCell>{user.emailAddress}</TableCell>
+                    <TableCell>{user.role}</TableCell>
+                    <TableCell>{user.userOrgPosition}</TableCell>
+                    <TableCell>
+                      {user.inviteLink ? (
+                        user.inviteStatus !== "Used" ? (
+                          <Button
+                            variant="ghost"
+                            onClick={() => handleCopy(user.inviteLink, user.id)}
+                          >
+                            <IconCopy stroke={2} className="mr-2" />
+                            {copiedUserId === user.id
+                              ? "Copied!"
+                              : "Copy Invite"}
+                          </Button>
+                        ) : (
+                          <Button
+                            variant="ghost"
+                            onClick={() =>
+                              console.log(
+                                "Generate new link for user:",
+                                user.id
+                              )
+                            }
+                          >
+                            <IconCopy stroke={2} className="mr-2" />
+                            Generate Invite
+                          </Button>
+                        )
+                      ) : (
+                        <></> // Render nothing if inviteLink is null
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -117,53 +155,53 @@ const PeopleInOrg = () => {
 
 export default PeopleInOrg;
 
-export const payments = [
-  {
-    id: "728ed52f",
-    amount: 100,
-    status: "pending",
-    email: "m@example.com",
-  },
-  {
-    id: "489e1d42",
-    amount: 125,
-    status: "processing",
-    email: "example@gmail.com",
-  },
-  {
-    id: "6f8a4b3c",
-    amount: 200,
-    status: "success",
-    email: "user1@example.com",
-  },
-  {
-    id: "d92c1e8a",
-    amount: 75,
-    status: "failed",
-    email: "user2@example.com",
-  },
-  {
-    id: "9b7e3f2d",
-    amount: 50,
-    status: "pending",
-    email: "test@example.com",
-  },
-  {
-    id: "4a8c1d7e",
-    amount: 300,
-    status: "processing",
-    email: "client@example.com",
-  },
-  {
-    id: "2d7f3b9a",
-    amount: 450,
-    status: "success",
-    email: "customer@example.com",
-  },
-  {
-    id: "8e9a4d2c",
-    amount: 90,
-    status: "failed",
-    email: "another@example.com",
-  },
-];
+// export const payments = [
+//   {
+//     id: "728ed52f",
+//     amount: 100,
+//     status: "pending",
+//     email: "m@example.com",
+//   },
+//   {
+//     id: "489e1d42",
+//     amount: 125,
+//     status: "processing",
+//     email: "example@gmail.com",
+//   },
+//   {
+//     id: "6f8a4b3c",
+//     amount: 200,
+//     status: "success",
+//     email: "user1@example.com",
+//   },
+//   {
+//     id: "d92c1e8a",
+//     amount: 75,
+//     status: "failed",
+//     email: "user2@example.com",
+//   },
+//   {
+//     id: "9b7e3f2d",
+//     amount: 50,
+//     status: "pending",
+//     email: "test@example.com",
+//   },
+//   {
+//     id: "4a8c1d7e",
+//     amount: 300,
+//     status: "processing",
+//     email: "client@example.com",
+//   },
+//   {
+//     id: "2d7f3b9a",
+//     amount: 450,
+//     status: "success",
+//     email: "customer@example.com",
+//   },
+//   {
+//     id: "8e9a4d2c",
+//     amount: 90,
+//     status: "failed",
+//     email: "another@example.com",
+//   },
+// ];

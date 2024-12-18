@@ -31,12 +31,19 @@ model Product {
   id             String       @id @default(uuid())
   productName    String
   description    String?
-  users          User[]
+  users          ProductAccess[]
   projects       Project[]    // A product can have multiple projects
   organization   Organization @relation(fields: [organizationId], references: [id])
   organizationId String
 
   @@map("product")
+}
+model ProductAccess {
+  id        String  @id @default(uuid())
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
 }
 
 model Project {
@@ -48,9 +55,19 @@ model Project {
   organization   Organization @relation(fields: [organizationId], references: [id])
   organizationId String
   tasks          Task[]
-  users          User[]       @relation("UserProjects")
+  users          ProjectAccess[]
+  
 
   @@map("project")
+}
+
+model ProjectAccess {
+  id        String  @id @default(uuid())
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String
+  project   Project @relation(fields: [projectId], references: [id])
+  projectId String
+  canEdit   Boolean @default(false) // Optional: Manage permissions for tasks
 }
 model Task {
   id              String   @id @default(uuid())
@@ -70,11 +87,11 @@ model User {
   emailAddress   String        @unique
   loginType      String?
   password       String
-  userOrgPosition String?    // User's position in the organization
+  userOrgPosition String?    
   organization   Organization? @relation(fields: [organizationId], references: [id])
   organizationId String?
-  products       Product[]
-  projects       Project[]     @relation("UserProjects")
+  products       ProductAccess[]  
+  projects       ProjectAccess[]  
   tasks          Task[]
   userRole       Role[]        @relation("UserRoles")
 
@@ -93,10 +110,13 @@ model InviteToken {
   id             String       @id @default(uuid())
   token          String       @unique
   emailAddress   String
+  userRole       String
+  userOrgPosition String? 
   expiresAt      DateTime
   isUsed         Boolean      @default(false)
   organization   Organization @relation(fields: [organizationId], references: [id])
-  organizationId String // Foreign key that links InviteToken to Organization
+  organizationId String 
 
-  @@index([organizationId]) // Optional: index on organizationId for faster lookups
+  @@index([organizationId]) 
 }
+

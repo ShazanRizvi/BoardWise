@@ -14,6 +14,9 @@ const cors = require("cors");
 const path = require("path");
 require("dotenv").config();
 
+const swaggerJsdoc = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express");
+
 const redisClient = redis.createClient({
     url: `redis://:${process.env.REDIS_PASSWORD}@${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
     socket: {
@@ -28,6 +31,58 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
+
+const swaggerOptions = {
+    definition: {
+        openapi: "3.0.0",
+        info: {
+            title: "Boardwise API Documentation",
+            version: "1.0.0",
+            description: "API documentation for Boardwise server",
+        },
+        servers: [
+            {
+                url: "http://localhost:5050", // Replace with your server URL
+            },
+        ],
+        tags: [
+            {
+                name: "Admin User Onboarding",
+                description: "Endpoints related to user Onboarding Steps",
+            },
+            {
+                name: "Invite Users to Org",
+                description: "Endpoints related to inviting users to an organization",
+            },
+            {
+                name: "Login",
+                description: "Endpoints related to user logiin (Admin and TeamMember)",
+            },
+            {
+                name: "Get Resources",
+                description: "Endpoints related to accessing all resources like products, projects, users",
+            },
+        ],
+        components: {
+            securitySchemes: {
+                bearerAuth: {
+                    type: "http",
+                    scheme: "bearer",
+                    bearerFormat: "JWT", // Optional: specify the token format
+                },
+            },
+        },
+        security: [
+            {
+                bearerAuth: [],
+            },
+        ],
+    },
+    apis: ["./src/routes/*.js"], // Path to route files
+};
+
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Ensure Redis is fully connected before setting up session middleware
 redisClient.connect().then(() => {
@@ -44,6 +99,8 @@ redisClient.connect().then(() => {
             maxAge: 24 * 60 * 60 * 1000,
         }
     }));
+
+  
 
     // Define routes after session middleware initialization
     app.use("/api/organizations", organizationRoutes);

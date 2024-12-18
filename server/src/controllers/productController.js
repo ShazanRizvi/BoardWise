@@ -37,3 +37,27 @@ exports.getProducts = async (req, res) => {
     }
   };
   
+  exports.addUserToProduct = async (req, res) => {
+    const { userId, productId, accessLevel } = req.body;
+    const adminId = req.session.user.id; // Admin ID from the session
+  
+    try {
+      // Ensure the user making the request is an Admin
+      const adminRoles = await prisma.productAccess.findFirst({
+        where: { userId: adminId, productId, accessLevel: 'Admin' },
+      });
+  
+      if (!adminRoles) {
+        return res.status(403).json({ message: 'Only admins can add users to products.' });
+      }
+  
+      // Add the user to the product
+      const productAccess = await productService.addUserToProduct(userId, productId, accessLevel);
+  
+      res.status(201).json({ message: 'User added to product successfully', productAccess });
+    } catch (error) {
+      console.error('Error adding user to product:', error.message);
+      res.status(500).json({ message: 'Error adding user to product' });
+    }
+  };
+  

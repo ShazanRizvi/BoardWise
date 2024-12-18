@@ -5,12 +5,19 @@ const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 require("dotenv").config();
 
-exports.createInvite = async (emailAddress,userRole, userOrgPosition, organizationId, adminId) => {
-
+exports.createInvite = async (
+  emailAddress,
+  userRole,
+  userOrgPosition,
+  organizationId,
+  adminId
+) => {
   const admin = await prisma.user.findUnique({
     where: { id: adminId },
     include: { userRole: true },
   });
+  console.log("org ID", organizationId);
+  console.log("admin", adminId);
 
   const isAdmin = admin?.userRole.some((role) => role.name === "Admin");
   if (!isAdmin) {
@@ -34,21 +41,28 @@ exports.createInvite = async (emailAddress,userRole, userOrgPosition, organizati
       token,
       emailAddress,
       expiresAt, // 24 hours expiration
+      userRole,
       organization: { connect: { id: organizationId } },
       userOrgPosition, // Include userOrgPosition
     },
   });
 
-  return {token, expiresAt};
+  console.log("invite from createInvite", invite);
+
+  return { token, expiresAt };
 };
 
 // Service to activate an account
 exports.activateAccount = async (token, username, password) => {
   // Find the invite token
-  const invite = await prisma.inviteToken.findUnique({ where: { token } });
-  if (!invite || invite.isUsed || new Date() > invite.expiresAt) {
+  const invite = await prisma.inviteToken.findUnique({
+    where: { token },
+    include: { organization: true },
+  });
+  if (!invite || invite.isUsed || invite.expiresAt < new Date()) {
     throw new Error("Invalid or expired invite token");
   }
+  console.log("invite", invite);
 
   // Hash the password
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -59,14 +73,17 @@ exports.activateAccount = async (token, username, password) => {
       username,
       emailAddress: invite.emailAddress,
       password: hashedPassword,
-      organizationId: invite.organizationId,
-      roles: { connect: { name: "team_member" } }, // Attach team member role
+      userOrgPosition: invite.userOrgPosition,
+      organization: { connect: { id: invite.organizationId } },
+      userRole: {
+        connect: { name: invite.userRole }, // Assign role (e.g., Admin or Team Member)
+      },
     },
   });
 
   // Mark the invite as used
   await prisma.inviteToken.update({
-    where: { id: invite.id },
+    where: { token },
     data: { isUsed: true },
   });
 
@@ -92,24 +109,32 @@ exports.login = async (emailAddress, password) => {
   }
 
   // Ensure the user has valid roles
-  const roles = user.userRole.map((role) => role.name);
-  console.log(roles);
-  if (!roles.includes("Admin") && !roles.includes("team_member")) {
+  const userRoles = user.userRole.map((role) => role.name);
+  console.log(userRoles);
+  if (!userRoles.includes("Admin") && !userRoles.includes("TeamMember")) {
     throw new Error("Unauthorized role");
   }
 
-  // Generate a JWT token
-  const token = jwt.sign(
-    {
-      userId: user.id,
-      email: user.emailAddress,
-      roles,
-    },
-    process.env.JWT_SECRET,
-    { expiresIn: "1h" }
-  );
+  const tokenPayload = {
+    userId: user.id,
+    email: user.emailAddress,
+    roles: userRoles,
+  };
+  const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, {
+    expiresIn: "1h",
+  });
 
-  return { token, user };
+  // Return the token and user details
+  return {
+    token,
+    user: {
+      id: user.id,
+      username: user.username,
+      emailAddress: user.emailAddress,
+      organization: user.organizationId,
+      roles: userRoles,
+    },
+  };
 };
 
 exports.signUp = async (username, emailAddress, password) => {

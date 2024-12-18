@@ -6,6 +6,8 @@ exports.createInvite = async (req, res) => {
   const organizationId = req.session.organizationId;
   const adminId = req.session.user.id;
 
+  console.log("req Body", req.body);
+
   try {
     // const inviteLink = await authService.createInvite(
     //   emailAddress,
@@ -24,7 +26,7 @@ exports.createInvite = async (req, res) => {
 
     res
       .status(201)
-      .json({ message: "Invite created successfully", inviteLink });
+      .json({ message: "Invite created successfully", inviteLink, emailAddress });
   } catch (error) {
     console.error("Error creating invite:", error.message);
     res.status(400).json({ message: error.message });
@@ -47,7 +49,8 @@ exports.login = async (req, res) => {
 
   try {
     const { token, user } = await authService.login(emailAddress, password);
-    const organizationId = user.organizationId;
+    const organizationId = user.organization;
+   
 
     req.session.organizationId = organizationId;
     req.session.user = user;

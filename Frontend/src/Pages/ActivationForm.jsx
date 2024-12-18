@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import { FiChevronRight } from "react-icons/fi";
 import { CardFooter } from "@/components/ui/card";
@@ -6,38 +6,37 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import LoaderWhite from "../utils/LoaderWhite";
 import callAPI from "@/http/axios";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { BackgroundBeamsWithCollision } from "../components/ui/background-beams-with-collision";
 import { TextGenerateEffect } from "../components/ui/text-generate-effect";
-import { HoverBorderGradient } from "../components/ui/hover-border-gradient";
 
 const ActivationForm = () => {
   const [loading, setLoading] = useState(false);
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-
   const subtitle = "A new and innovative way to manage and create your boards";
 
+  const [searchParams] = useSearchParams(); // Get the URL search params
   const token = searchParams.get("token");
 
-  console.log("token", token);
-  //   useEffect(() => {
-  //      const fetchEmailFromToken = async () => {
-  //        try {
-  //          const response = await callAPI("POST", "/auth/validate_invite", { token });
-  //          setEmail(response.email); // Assume the API returns the associated email
-  //        } catch (error) {
-  //          console.error("Error validating token:", error);
-  //          alert("Invalid or expired activation token.");
-  //          navigate("/login"); // Redirect if token is invalid
-  //        }
-  //      };
+  const handleActivateAccount = async (values) => {
+     setLoading(true);
+     console.log("Values:", values);
+     const payload = {
+          token, // Short syntax for token: token
+          username: values.username,
+          password: values.password,
+        };
+     try {
+             console.log("Payload:", payload);
+       const response = await callAPI("POST", "/auth/activate", payload);
+           console.log("Activate Response:", response);
+     }
+     catch (error) {
+       console.error("Error activating account:", error);
+     }finally {
+       setLoading(false);
+     }
+  };
 
-  //      if (token) {
-  //        fetchEmailFromToken();
-  //      }
-  //    }, [token, navigate]);
 
   return (
     <BackgroundBeamsWithCollision>
@@ -56,25 +55,22 @@ const ActivationForm = () => {
               </div>
               <Formik
                 initialValues={{
-                  username: "",
-                  email: "",
+                    username: "",
                   password: "",
                 }}
                 //validationSchema={validationSchema}
-                onSubmit={(values) => console.log(values)}
+                onSubmit={handleActivateAccount}
               >
                 {({ errors, touched, isSubmitting }) => (
                   <Form>
                     <div className="grid w-full items-center gap-4">
                       <div className="flex flex-col space-y-1.5">
-                        <Label htmlFor="emailAddress">Email Address</Label>
+                        <Label htmlFor="username">Email Address</Label>
                         <Field
-                          id="emailAddress"
-                          name="emailAddress"
-                          placeholder="projectmayhem@fc.com"
-                          type="email"
-                          value={email}
-                          disabled
+                          id="username"
+                          name="username"
+                          placeholder="John Doe"
+                          type="text"
                           as={Input}
                           className={
                             touched.emailAddress && errors.emailAddress
@@ -115,7 +111,6 @@ const ActivationForm = () => {
                       <div className="flex justify-between gap-4 w-full">
                         <button
                           type="submit"
-                          // onClick={handleSubmit}
                           //disabled={isSubmitting || loading}
                           // disabled={currentStep === totalSteps}
                           className="px-4 py-2 w-full flex justify-center items-center text-sm font-medium rounded-md text-white bg-primary  hover:bg-primary/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 disabled:opacity-50 disabled:cursor-not-allowed"
