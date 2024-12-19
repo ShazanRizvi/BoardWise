@@ -20,6 +20,8 @@ import SideDrawer from "./DashboardElements/ProjectBoardComponents/SideDrawer";
 import AppContext from "../../context/AppContext";
 import callAPI from "@/http/axios";
 import Loader from "@/utils/Loader";
+import { DataTable } from "../DataTable/DataTable";
+import { columns } from "../DataTable/Columns";
 
 const PeopleInOrg = () => {
   const { isDrawerOpen, closeDrawer, setIsDrawerOpen } = useContext(AppContext);
@@ -27,6 +29,28 @@ const PeopleInOrg = () => {
   const navigate = useNavigate();
   const [usersOfOrg, setUsersOfOrg] = useState([]);
   const [copiedUserId, setCopiedUserId] = useState(null);
+  const [data, setData] = useState([]);
+
+  async function getData() {
+    // Fetch data from your API here.
+    return [
+      {
+        id: "728ed52f",
+        amount: 100,
+        status: "pending",
+        email: "m@example.com",
+      },
+    ];
+  }
+
+  useEffect(() => {
+    async function fetchData() {
+      const fetchedData = await getData();
+      setData(fetchedData);
+    }
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const fetchallUsersofOrg = async () => {
@@ -93,7 +117,7 @@ const PeopleInOrg = () => {
           </div>
         ) : (
           <div className="mt-4 max-w-7xl ">
-            <Table className=" bg-primary-50">
+            {/* <Table className=" bg-primary-50">
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-[100px]">Name</TableHead>
@@ -145,7 +169,20 @@ const PeopleInOrg = () => {
                   </TableRow>
                 ))}
               </TableBody>
-            </Table>
+            </Table> */}
+
+            <DataTable
+              columns={columns(handleCopy, copiedUserId)}
+              data={usersOfOrg.map((user) => ({
+                username: user.username,
+                email: user.emailAddress,
+                role: user.role,
+                position: user.userOrgPosition,
+                inviteLink: user.inviteLink,
+                inviteStatus: user.inviteStatus,
+                id: user.id,
+              }))}
+            />
           </div>
         )}
       </div>
