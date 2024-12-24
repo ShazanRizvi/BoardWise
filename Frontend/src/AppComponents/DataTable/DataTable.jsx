@@ -77,7 +77,7 @@ export function DataTable({ columns, data }) {
           className="max-w-sm"
         />
       </div>
-      <div className="relative rounded-md border border-primary-100 max-h-96 overflow-y-auto scrollbar-hidden">
+      <div className="relative rounded-md border border-primary-100 max-h-96  overflow-y-auto scrollbar-hidden">
         <Table className=" w-full">
           <TableHeader className="">
             {table.getHeaderGroups().map((headerGroup) => (

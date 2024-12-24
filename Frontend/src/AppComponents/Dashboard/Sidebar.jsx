@@ -40,6 +40,17 @@ export function DashboardSidebar() {
   }, [navigate]);
   console.log("user details", userDetails);
 
+  const handleLogout = async () => {
+    try {
+      const response = await callAPI("GET", "/logout");
+      console.log("response", response);
+      localStorage.removeItem("access_token");
+      navigate("/login");
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
+
   const links = [
     {
       label: "Products",
@@ -69,8 +80,7 @@ export function DashboardSidebar() {
         <IconArrowLeft className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
       onClick: () => {
-        localStorage.removeItem("access_token");
-        navigate("/home");
+        handleLogout();
       },
     },
   ];

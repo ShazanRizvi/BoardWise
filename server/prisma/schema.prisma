@@ -28,16 +28,17 @@ model Organization {
 }
 
 model Product {
-  id             String       @id @default(uuid())
+  id             String          @id @default(uuid())
   productName    String
   description    String?
   users          ProductAccess[]
-  projects       Project[]    // A product can have multiple projects
-  organization   Organization @relation(fields: [organizationId], references: [id])
+  projects       Project[] // A product can have multiple projects
+  organization   Organization    @relation(fields: [organizationId], references: [id])
   organizationId String
 
   @@map("product")
 }
+
 model ProductAccess {
   id        String  @id @default(uuid())
   user      User    @relation(fields: [userId], references: [id])
@@ -47,16 +48,15 @@ model ProductAccess {
 }
 
 model Project {
-  id             String       @id @default(uuid())
+  id             String          @id @default(uuid())
   projectName    String
   description    String?
-  product        Product      @relation(fields: [productId], references: [id]) 
-  productId      String      
-  organization   Organization @relation(fields: [organizationId], references: [id])
+  product        Product         @relation(fields: [productId], references: [id])
+  productId      String
+  organization   Organization    @relation(fields: [organizationId], references: [id])
   organizationId String
   tasks          Task[]
   users          ProjectAccess[]
-  
 
   @@map("project")
 }
@@ -69,31 +69,37 @@ model ProjectAccess {
   projectId String
   canEdit   Boolean @default(false) // Optional: Manage permissions for tasks
 }
+
 model Task {
-  id              String   @id @default(uuid())
+  id              String  @id @default(uuid())
   taskName        String
   taskDescription String?
-  taskTags        String[]
-  users           User[]
-  project         Project  @relation(fields: [projectId], references: [id])
+  status          String // Represents the column or stage (e.g., "To Do", "In Progress", "Done")
+  position        Int // Position within the column
+  project         Project @relation(fields: [projectId], references: [id])
   projectId       String
+  assignedTo      User?   @relation("AssignedTasks", fields: [userId], references: [id]) // User assigned to this task
+  userId          String?
+  createdBy       User    @relation("CreatedTasks", fields: [createdById], references: [id]) // User who created the task
+  createdById     String
 
   @@map("task")
 }
 
 model User {
-  id             String        @id @default(uuid())
-  username       String
-  emailAddress   String        @unique
-  loginType      String?
-  password       String
-  userOrgPosition String?    
-  organization   Organization? @relation(fields: [organizationId], references: [id])
-  organizationId String?
-  products       ProductAccess[]  
-  projects       ProjectAccess[]  
-  tasks          Task[]
-  userRole       Role[]        @relation("UserRoles")
+  id              String          @id @default(uuid())
+  username        String
+  emailAddress    String          @unique
+  loginType       String?
+  password        String
+  userOrgPosition String?
+  organization    Organization?   @relation(fields: [organizationId], references: [id])
+  organizationId  String?
+  products        ProductAccess[]
+  projects        ProjectAccess[]
+  assignedTasks   Task[]          @relation("AssignedTasks") // Tasks where the user is assigned
+  createdTasks    Task[]          @relation("CreatedTasks") // Tasks created by the user
+  userRole        Role[]          @relation("UserRoles")
 
   @@map("user")
 }
@@ -107,16 +113,15 @@ model Role {
 }
 
 model InviteToken {
-  id             String       @id @default(uuid())
-  token          String       @unique
-  emailAddress   String
-  userRole       String
-  userOrgPosition String? 
-  expiresAt      DateTime
-  isUsed         Boolean      @default(false)
-  organization   Organization @relation(fields: [organizationId], references: [id])
-  organizationId String 
+  id              String       @id @default(uuid())
+  token           String       @unique
+  emailAddress    String
+  userRole        String
+  userOrgPosition String?
+  expiresAt       DateTime
+  isUsed          Boolean      @default(false)
+  organization    Organization @relation(fields: [organizationId], references: [id])
+  organizationId  String
 
-  @@index([organizationId]) 
+  @@index([organizationId])
 }
-

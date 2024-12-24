@@ -37,13 +37,13 @@ export const columns = (handleCopy, copiedUserId) => [
             {copiedUserId === id ? "Copied!" : "Copy Invite"}
           </Button>
         ) : (
-          <div className="w-1/2">
+          <div className="w-2/3">
             <Button
               className=" bg-gray-100 mr-4 ml-4 text-primary-600 hover:bg-primary-100"
               onClick={() => console.log("Generate new link for user:", id)}
             >
               <IconCopy stroke={2} className="mr-1" />
-              <h2 className="text-xs lg:block hidden">Create Invite</h2>
+              <h2 className="text-xs md:block hidden">Create Invite</h2>
             </Button>
           </div>
         )

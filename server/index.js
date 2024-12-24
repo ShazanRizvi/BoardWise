@@ -2,13 +2,15 @@ const express = require("express");
 const session = require("express-session");
 const RedisStore = require("connect-redis").default;
 const redis = require("redis");
-
+const { createServer } = require("http"); // Required to integrate Socket.IO
+const { Server } = require("socket.io"); // Import Socket.IO
 
 const authRoutes = require("./src/routes/authRoutes");
 const organizationRoutes = require("./src/routes/organizationRoutes");
 const productRoutes = require("./src/routes/productRoutes");
 const projectRoutes = require("./src/routes/projectRoutes");
 const userRoutes = require('./src/routes/userRoutes');
+const taskRoutes = require('./src/routes/taskRoutes');
 
 const cors = require("cors");
 const path = require("path");
@@ -99,7 +101,48 @@ redisClient.connect().then(() => {
             maxAge: 24 * 60 * 60 * 1000,
         }
     }));
+   
+    const server = createServer(app); // Wrap express app with HTTP server for Socket.IO
+    const io = new Server(server, {
+        cors: {
+            origin: `${process.env.BOARDWISE_FRONTEND_HOST}`, // Frontend origin
+            methods: ["GET", "POST"],
+            credentials: true,
+        },
+    });
 
+    io.on("connection", (socket) => {
+        console.log("New client connected:", socket.id);
+    
+        // Event: Task moved
+        socket.on("taskMoved", (data) => {
+            console.log("Task moved:", data);
+    
+            // Broadcast task update to other clients
+            socket.broadcast.emit("taskUpdated", data);
+        });
+    
+        // Event: Task created
+        socket.on("taskCreated", (data) => {
+            console.log("Task created:", data);
+    
+            // Broadcast task creation to other clients
+            socket.broadcast.emit("taskAdded", data);
+        });
+    
+        // Event: Task deleted
+        socket.on("taskDeleted", (data) => {
+            console.log("Task deleted:", data);
+    
+            // Broadcast task deletion to other clients
+            socket.broadcast.emit("taskRemoved", data);
+        });
+    
+        // Disconnect event
+        socket.on("disconnect", () => {
+            console.log("Client disconnected:", socket.id);
+        });
+    });
   
 
     // Define routes after session middleware initialization
@@ -107,6 +150,7 @@ redisClient.connect().then(() => {
     app.use("/api/products", productRoutes);
     app.use("/api/projects", projectRoutes);
     app.use("/api/auth", authRoutes);
+    app.use("/api/tasks",taskRoutes);
     app.use("/api/current_user", userRoutes);
     app.get("/", (req, res) => {
         res.send("Welcome to Boardwise server");
@@ -119,7 +163,7 @@ redisClient.connect().then(() => {
     });
 
     // Optional logout route to clear session
-    app.get('/logout', (req, res) => {
+    app.get('/api/logout', (req, res) => {
         req.session.destroy((err) => {
             if (err) {
                 return res.status(500).json({ message: 'Failed to log out' });
