@@ -59,8 +59,20 @@ exports.getProjectsByProduct = async (productId) => {
   const projects = await prisma.project.findMany({
     where: { productId },
     include: {
-      users: true, 
+      users: {
+        include: {
+          user: { // This is the relation in `ProjectAccess` that connects to the `User` model
+            select: {
+              id: true,
+              username: true,
+              emailAddress: true,
+              userOrgPosition: true,
+            },
+          },
+        },
+      },
       tasks: true, 
+      product: true,
     },
   });
   return projects;

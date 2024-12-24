@@ -29,28 +29,6 @@ const PeopleInOrg = () => {
   const navigate = useNavigate();
   const [usersOfOrg, setUsersOfOrg] = useState([]);
   const [copiedUserId, setCopiedUserId] = useState(null);
-  const [data, setData] = useState([]);
-
-  async function getData() {
-    // Fetch data from your API here.
-    return [
-      {
-        id: "728ed52f",
-        amount: 100,
-        status: "pending",
-        email: "m@example.com",
-      },
-    ];
-  }
-
-  useEffect(() => {
-    async function fetchData() {
-      const fetchedData = await getData();
-      setData(fetchedData);
-    }
-
-    fetchData();
-  }, []);
 
   useEffect(() => {
     const fetchallUsersofOrg = async () => {
@@ -117,60 +95,6 @@ const PeopleInOrg = () => {
           </div>
         ) : (
           <div className="mt-4 max-w-7xl ">
-            {/* <Table className=" bg-primary-50">
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[100px]">Name</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Role</TableHead>
-                  <TableHead>Position</TableHead>
-                  <TableHead className="text-center">Invite Link</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {usersOfOrg.map((user) => (
-                  <TableRow key={user.id}>
-                    <TableCell className="font-medium">
-                      {user.username}
-                    </TableCell>
-                    <TableCell>{user.emailAddress}</TableCell>
-                    <TableCell>{user.role}</TableCell>
-                    <TableCell>{user.userOrgPosition}</TableCell>
-                    <TableCell>
-                      {user.inviteLink ? (
-                        user.inviteStatus !== "Used" ? (
-                          <Button
-                            variant="ghost"
-                            onClick={() => handleCopy(user.inviteLink, user.id)}
-                          >
-                            <IconCopy stroke={2} className="mr-2" />
-                            {copiedUserId === user.id
-                              ? "Copied!"
-                              : "Copy Invite"}
-                          </Button>
-                        ) : (
-                          <Button
-                            variant="ghost"
-                            onClick={() =>
-                              console.log(
-                                "Generate new link for user:",
-                                user.id
-                              )
-                            }
-                          >
-                            <IconCopy stroke={2} className="mr-2" />
-                            Generate Invite
-                          </Button>
-                        )
-                      ) : (
-                        <></> // Render nothing if inviteLink is null
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table> */}
-
             <DataTable
               columns={columns(handleCopy, copiedUserId)}
               data={usersOfOrg.map((user) => ({

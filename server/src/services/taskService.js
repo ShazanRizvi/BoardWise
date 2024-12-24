@@ -31,24 +31,24 @@ exports.assignUserToTask = async (taskId, assignedToId) => {
   const task = await prisma.task.update({
     where: { id: taskId },
     data: {
-        assignedTo: { connect: { id: assignedToId } },
+      assignedTo: { connect: { id: assignedToId } },
     },
     include: {
-        assignedTo: true,
+      assignedTo: true,
     },
-});
-return task;
+  });
+  return task;
 };
 
-exports.getTasksbyProject= async (projectId) => {
+exports.getTasksbyProject = async (projectId) => {
   const tasks = await prisma.task.findMany({
     where: { projectId },
     include: {
-        assignedTo: true, // Include assigned user details
-        createdBy: true,  // Include creator details
+      assignedTo: true, // Include assigned user details
+      createdBy: true, // Include creator details
     },
-});
-return tasks;
+  });
+  return tasks;
 };
 
 exports.updateTaskPostion = async (taskId, newPosition, newStatus) => {
@@ -59,5 +59,25 @@ exports.updateTaskPostion = async (taskId, newPosition, newStatus) => {
       status: newStatus,
     },
   });
- 
+  return updatedTask;
+};
+
+exports.deleteTask = async (taskId) => {
+  const deletedTask = await prisma.task.delete({
+    where: { id: taskId },
+  });
+  return deletedTask;
+};
+
+exports.updateTask = async (taskName, taskDescription, status, position) => {
+  const updatedTask = await prisma.task.update({
+    where: { id: taskId },
+    data: {
+      ...(taskName && { taskName }),
+      ...(taskDescription && { taskDescription }),
+      ...(status && { status }),
+      ...(position && { position }),
+    },
+  });
+  return updatedTask;
 };

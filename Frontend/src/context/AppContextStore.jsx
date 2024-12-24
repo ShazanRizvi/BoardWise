@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import AppContext from "./AppContext";
-import { set } from "date-fns";
+import  callAPI  from "../http/axios";
 
 
 
@@ -8,6 +8,45 @@ const AppContextStore = ({ children }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [chatType, setChatType] = useState(null);
   const [selectedCard, setSelectedCard] = useState(null);
+  const [usersOfOrg, setUsersOfOrg] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [products, setProducts] = useState([]);
+
+  const defaultImages = [
+    "https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=3387&q=80",
+    "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YXZhdGFyfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60",
+    "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8YXZhdGFyfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60",
+    "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGF2YXRhcnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
+    "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=3540&q=80",
+    "https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=3534&q=80",
+  ];
+  
+
+  useEffect(() => {
+    const fetchallUsersofOrg = async () => {
+     setLoading(true);
+      try {
+        const response = await callAPI("GET", `/organizations/users`, null, {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        });
+
+        const people = response?.users?.map((user, index) => ({
+          id: index + 1,
+          name: user.username || "Unknown User", // Fallback in case username is null
+          designation: user.userOrgPosition || user.role.join(", ") || "No Position", // Use userOrgPosition or fallback to role
+          image: defaultImages[index % defaultImages.length], // Cycle through default images
+        }));
+
+        setUsersOfOrg(people);
+        console.log("users of org from context", people);
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+      }finally{
+        setLoading(false);
+      }
+    };
+    fetchallUsersofOrg();
+  }, []);
 
   const [invitedUserEmail, setInvitedUserEmail] = useState("");
   const openDrawerWithChat = (type, card) => {
@@ -287,6 +326,9 @@ const AppContextStore = ({ children }) => {
         handleStepChange,
         invitedUserEmail,
         setInvitedUserEmail,
+        usersOfOrg,
+        products,
+        setProducts,
         
       }}
     >

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import DashboardCard from "./ProjectDashboardComponents/DashboardCard";
 import callAPI from "@/http/axios";
@@ -8,18 +8,22 @@ import { FaPlus } from "react-icons/fa6";
 import { FcGenealogy } from "react-icons/fc";
 import AddEditTaskDialog from "../DashboardElements/ProjectBoardComponents/AddEditTaskDialog";
 import AddProjectForm from "./ProjectDashboardComponents/AddProjectForm";
+import AppContext from "../../../context/AppContext";
+import { AnimatedTooltip } from "@/components/ui/animated-tooltip";
+import { Badge } from "@/components/ui/badge";
 
 const ProjectDashboard = () => {
   const [loading, setLoading] = useState(null);
   const [projects, setProjects] = useState([]);
   const { productId } = useParams();
+  const { usersOfOrg } = useContext(AppContext);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleDialogOpen = () => {
     setIsDialogOpen((prev) => !prev);
   };
-  
+
   useEffect(() => {
     const getProjectsByProduct = async () => {
       setLoading(true);
@@ -51,22 +55,31 @@ const ProjectDashboard = () => {
       <div className=" flex justify-between items-center ">
         <div>
           <h1 className="text-4xl font-bold">Your Projects</h1>
-          <p className="text-base  font-normal">
-            These are the projects which exist in your Product
-          </p>
+
+          <div className="flex items-center justify-between">
+            <AnimatedTooltip items={usersOfOrg} />
+          </div>
         </div>
-        <div>
-          <Button
-            className="px-4 py-2"
-            variant="default"
-            size
-            onClick={handleDialogOpen}
-          >
-            <span className="mr-1">
-              <FaPlus size={24} />
-            </span>{" "}
-            <span className="mr-1">Add Project</span>
-          </Button>
+        <div className="flex-col justify-between items-center">
+          <div className="mb-3">
+            <Badge variant="dashboard" className="text-xs">
+              {" "}
+              {projects[0]?.product?.productName}
+            </Badge>
+          </div>
+          <div>
+            <Button
+              className="px-4 py-2"
+              variant="default"
+              size
+              onClick={handleDialogOpen}
+            >
+              <span className="mr-1">
+                <FaPlus size={24} />
+              </span>{" "}
+              <span className="mr-1">Add Project</span>
+            </Button>
+          </div>
         </div>
       </div>
       <div>
@@ -83,7 +96,6 @@ const ProjectDashboard = () => {
         <DashboardCard projects={projects} />
       </div>
     </div>
-    
   );
 };
 

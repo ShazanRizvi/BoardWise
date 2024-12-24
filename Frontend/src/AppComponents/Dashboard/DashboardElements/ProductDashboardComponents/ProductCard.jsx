@@ -1,40 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { HoverEffect } from "../../../../components/ui/card-hover-effect";
-import callAPI from "@/http/axios";
+
 import Loader from "../../../../utils/Loader";
-import { useNavigate } from "react-router-dom";
 
-const ProductCard = () => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(null);
-  const navigate = useNavigate();
-
+const ProductCard = ({ products, loading }) => {
   //Move to utils afterwards
   const truncateText = (text, maxLength) => {
     if (!text) return ""; // Handle cases where the text is null or undefined
     return text.length > maxLength
       ? `${text.substring(0, maxLength)}...`
-      : text; 
+      : text;
   };
-
-  useEffect(() => {
-    const getProducts = async () => {
-      setLoading(true);
-      try {
-        const response = await callAPI("GET", "/products/products", null, {
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-        });
-
-        setProducts(response?.products);
-      } catch (error) {
-        console.error("Error fetching user details:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getProducts();
-  }, [navigate]);
 
   return loading ? (
     <div className=" flex justify-center items-center h-screen w-full">
