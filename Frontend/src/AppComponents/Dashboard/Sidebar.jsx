@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "../../components/ui/sidebar";
 import {
   IconArrowLeft,
@@ -11,34 +11,11 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import callAPI from "@/http/axios";
 import { useNavigate } from "react-router-dom";
+import AppContext from "../../context/AppContext";
 
 export function DashboardSidebar() {
-  const [userDetails, setUserDetails] = useState(null);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchUserDetails = async () => {
-      const token = localStorage.getItem("access_token");
-      if (token) {
-        try {
-          // Call the API to get user details
-          const response = await callAPI("GET", "/current_user/details", null, {
-            Authorization: `Bearer ${token}`,
-          });
-          setUserDetails(response); // Set user details to state
-        } catch (error) {
-          console.error("Error fetching user details:", error);
-          localStorage.removeItem("access_token"); // Remove token if it's invalid
-          navigate("/login"); // Redirect to login if user details fetch fails
-        }
-      } else {
-        navigate("/login"); // Redirect to login if no token is found
-      }
-    };
-
-    fetchUserDetails(); // Call the async function
-  }, [navigate]);
-  console.log("user details", userDetails);
+  const { currentUserDetails } = useContext(AppContext);
 
   const handleLogout = async () => {
     try {
@@ -115,13 +92,13 @@ export function DashboardSidebar() {
               label: (
                 <div className="flex flex-col">
                   <span className="text-base bg-clip-text text-transparent bg-no-repeat bg-gradient-to-r from-purple-500 via-violet-500 to-pink-500 font-bold ">
-                    {userDetails?.data?.username}
+                    {currentUserDetails?.username}
                   </span>
                   <span className="text-sm text-gray-700 ">
-                    {userDetails?.data?.emailAddress}
+                    {currentUserDetails?.emailAddress}
                   </span>
                   <span className="text-xs text-gray-400">
-                    {userDetails?.data?.organization?.organizationName}
+                    {currentUserDetails?.organization?.organizationName}
                   </span>
                 </div>
               ),

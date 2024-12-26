@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import AppContext from "./AppContext";
 import  callAPI  from "../http/axios";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -11,6 +12,8 @@ const AppContextStore = ({ children }) => {
   const [usersOfOrg, setUsersOfOrg] = useState([]);
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState([]);
+  const[currentUserDetails, setCurrentUserDetails]=useState(null);
+ 
 
   const defaultImages = [
     "https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=3387&q=80",
@@ -20,32 +23,50 @@ const AppContextStore = ({ children }) => {
     "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=3540&q=80",
     "https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=3534&q=80",
   ];
+  //Fetch All Users in an organization
+  const fetchallUsersofOrg = async () => {
+    setLoading(true);
+     try {
+       const response = await callAPI("GET", `/organizations/users`, null, {
+         Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+       });
+
+       const people = response?.users?.map((user, index) => ({
+         id: index + 1,
+         name: user.username || "Unknown User", // Fallback in case username is null
+         designation: user.userOrgPosition || user.role.join(", ") || "No Position", // Use userOrgPosition or fallback to role
+         image: defaultImages[index % defaultImages.length], // Cycle through default images
+       }));
+
+       setUsersOfOrg(people);
+       console.log("users of org from context", people);
+     } catch (error) {
+       console.error("Error fetching user details:", error);
+     }finally{
+       setLoading(false);
+     }
+   };
+
+   //Fetch the current logged in user
+   const fetchUserDetails = async () => {
+    const token = localStorage.getItem("access_token");
+      try {
+        // Call the API to get user details
+        const response = await callAPI("GET", "/current_user/details", null, {
+          Authorization: `Bearer ${token}`,
+        });
+        setCurrentUserDetails(response.data); // Set user details to state
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+       
+      }
+    }
+  
   
 
   useEffect(() => {
-    const fetchallUsersofOrg = async () => {
-     setLoading(true);
-      try {
-        const response = await callAPI("GET", `/organizations/users`, null, {
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-        });
-
-        const people = response?.users?.map((user, index) => ({
-          id: index + 1,
-          name: user.username || "Unknown User", // Fallback in case username is null
-          designation: user.userOrgPosition || user.role.join(", ") || "No Position", // Use userOrgPosition or fallback to role
-          image: defaultImages[index % defaultImages.length], // Cycle through default images
-        }));
-
-        setUsersOfOrg(people);
-        console.log("users of org from context", people);
-      } catch (error) {
-        console.error("Error fetching user details:", error);
-      }finally{
-        setLoading(false);
-      }
-    };
     fetchallUsersofOrg();
+    fetchUserDetails();
   }, []);
 
   const [invitedUserEmail, setInvitedUserEmail] = useState("");
@@ -329,6 +350,7 @@ const AppContextStore = ({ children }) => {
         usersOfOrg,
         products,
         setProducts,
+        currentUserDetails,
         
       }}
     >

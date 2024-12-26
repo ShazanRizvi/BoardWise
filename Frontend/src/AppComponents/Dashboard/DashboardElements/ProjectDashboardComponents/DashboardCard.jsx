@@ -20,9 +20,9 @@ const DashboardCard = ({ projects }) => {
         description: project.description || "No description available",
         link: `/dashboard/project/${project.id}`,
         people: project.users.map((user, index) => ({
-          id: user.id,
-          name: user.username || "Unknown User", // Fallback in case username is null
-          designation: user.userOrgPosition || "No Position", // Use userOrgPosition or fallback to role
+          id: user.user.id,
+          name: user.user.username || "Unknown User", // Fallback in case username is null
+          designation: user.user.userOrgPosition || "No Position", 
           image: defaultImages[index % defaultImages.length], // Placeholder image generator
         })),
       };
