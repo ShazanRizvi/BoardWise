@@ -290,4 +290,6 @@ router.get(
   projectController.getProjectByProduct
 );
 
+router.get("/:projectId", authenticate, projectController.getProjectById);
+
 module.exports = router;

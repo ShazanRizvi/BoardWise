@@ -13,6 +13,7 @@ const AppContextStore = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState([]);
   const[currentUserDetails, setCurrentUserDetails]=useState(null);
+  
  
 
   const defaultImages = [
@@ -61,6 +62,8 @@ const AppContextStore = ({ children }) => {
        
       }
     }
+
+   
   
   
 

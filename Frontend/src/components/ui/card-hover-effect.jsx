@@ -70,7 +70,7 @@ export const HoverEffect = ({ items, className }) => {
           <Card>
             <div className="flex items-center">
               <div className="bg-primary-200 p-2 rounded-lg mb-2 flex-shrink-0">
-                <ItemIcon className="text-primary-600" size={40} stroke={2} />
+                <ItemIcon className="text-primary-900" size={40} stroke={2} />
               </div>
             </div>
             <CardTitle>{item.title}</CardTitle>

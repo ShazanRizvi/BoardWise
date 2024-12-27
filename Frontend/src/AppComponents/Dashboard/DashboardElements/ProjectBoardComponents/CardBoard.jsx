@@ -7,6 +7,7 @@ import {
 import AppContext from "../../../../context/AppContext";
 import BoardColumn from "./BoardColumn";
 import BoardCardOverlay from "./BoardCardOverlay";
+;
 
 const CardBoard = () => {
   const { columns, setColumns, cards, setCards } = useContext(AppContext);

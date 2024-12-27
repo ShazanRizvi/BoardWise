@@ -10,6 +10,11 @@ import { GoPlus } from "react-icons/go";
 import AddEditTaskDialog from "./AddEditTaskDialog";
 import AddTaskForm from "./ModalForms/AddTaskForm";
 import { FcGenealogy } from "react-icons/fc";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 const BoardColumn = ({ column, cards }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -28,7 +33,16 @@ const BoardColumn = ({ column, cards }) => {
             <h2 className="text-base font-semibold">{column.title}</h2>
             <div className=" text-gray-500">{cards.length} </div>
           </div>
-          <HiDotsVertical />
+          <Popover>
+            <PopoverTrigger>
+              <HiDotsVertical />
+            </PopoverTrigger>
+            <PopoverContent>
+              <Button className="p-1" variant="ghost">
+                Delete Column
+              </Button>
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
       <div className="mr-2 ml-2 sticky  top-14 z-10 ">
@@ -51,7 +65,7 @@ const BoardColumn = ({ column, cards }) => {
 
       <div className="overflow-y-auto  mr-2 ml-2 pb-5  ">
         {cards.map((card) => (
-          <BoardCard  key={card.id} card={card} />
+          <BoardCard key={card.id} card={card} />
         ))}
       </div>
     </div>

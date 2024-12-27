@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { FcParallelTasks } from "react-icons/fc";
 import CardBoard from "./ProjectBoardComponents/CardBoard";
@@ -8,59 +8,114 @@ import { FaRegStar } from "react-icons/fa6";
 import { HiDotsVertical } from "react-icons/hi";
 import AppContext from "../../../context/AppContext";
 import SideDrawer from "./ProjectBoardComponents/SideDrawer";
+import callAPI from "@/http/axios";
+import Loader from "../../../utils/Loader";
+import { Badge } from "../../../components/ui/badge";
+import BreadCrumb from "./ProjectBoardComponents/BreadCrumb";
+import Topbar from "../Topbar";
 
 const ProjectBoard = () => {
-  const { isDrawerOpen, setIsDrawerOpen, handleDrawer } = useContext(AppContext);
+  const { isDrawerOpen, setIsDrawerOpen, handleDrawer } =
+    useContext(AppContext);
   const { projectId } = useParams();
-  return (
-    <div
-      className="p-5 w-full "
-      style={{
-        backgroundImage:
-          "radial-gradient(circle, #d3d3d3 1px, transparent 1px)",
-        backgroundSize: "20px 20px",
-        width: "100%",
-        height: "100vh", // Full-screen height
-        backgroundColor: "white", // Set background color
-      }}
-    >
-      <div className="flex justify-between">
-        <div className="inline-flex rounded-full p-2 pr-4 pl-4 gap-2 items-center backdrop-blur-sm bg-white/50 shadow-lg">
-          <div className="bg-transparent">
-            <FcParallelTasks size={26} />
-          </div>
-          <div className="bg-transparent">
-            <h1 className="text-2xl font-bold">New Project: {projectId}</h1>
-          </div>
-        </div>
+  const [loading, setLoading] = useState(null);
+  const [project, setProject] = useState([]);
+  const { currentUserDetails } = useContext(AppContext);
 
-        <div className="flex gap-2">
-        <div className="inline-flex rounded-full items-center backdrop-blur-sm bg-white/50 shadow-lg">
-          <button className="bg-transparent text-black p-3 ">
-            <a href="/projectboard">
-              <FiSearch size={20} />
-            </a>
-          </button>
+  useEffect(() => {
+    try {
+      const getProjectsByProduct = async () => {
+        setLoading(true);
+        const response = await callAPI("GET", `/projects/${projectId}`, null, {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        });
+        setProject(response?.project);
+        console.log("response", response);
+      };
+      getProjectsByProduct();
+    } catch (error) {
+      console.error("Error fetching user details:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [projectId]);
+
+  console.log("loading of API from project board", loading);
+
+  return loading ? (
+    <div className=" flex justify-center items-center h-screen w-full">
+      <Loader width={100} height={100} />
+    </div>
+  ) : (
+    <div className=" w-full "> 
+      <Topbar
+        orgName={currentUserDetails?.organization?.organizationName}
+        orgLogo={currentUserDetails?.organization?.orgLogo}
+      />
+      <div
+        className="p-3 pt-2 w-full "
+        style={{
+          backgroundImage:
+            "radial-gradient(circle, #d3d3d3 1px, transparent 1px)",
+          backgroundSize: "20px 20px",
+          width: "100%",
+          height: "100vh", // Full-screen height
+          backgroundColor: "white", // Set background color
+        }}
+      >
+        <div className="flex justify-between">
+          <div>
+            <div className="inline-flex rounded-full p-2 pr-4 pl-4 gap-2 items-center backdrop-blur-sm bg-white/50 shadow-lg">
+              <div className="bg-transparent">
+                <FcParallelTasks size={26} />
+              </div>
+              {loading ? (
+                <Loader width={50} height={50} />
+              ) : (
+                <div className="bg-transparent">
+                  <h1 className="text-2xl font-bold">
+                    {" "}
+                    {project?.projectName}
+                  </h1>
+                </div>
+              )}
+            </div>
+            <div className="mt-4 ml-2">
+              <BreadCrumb
+                currentProject={project?.projectName}
+                currentProduct={project?.product?.productName}
+              />
+            </div>
+          </div>
+
+          <div>
+            <div className="flex gap-2">
+              <div className="inline-flex rounded-full items-center backdrop-blur-sm bg-white/50 shadow-lg">
+                <button className="bg-transparent text-black p-3 ">
+                  <a href="/projectboard">
+                    <FiSearch size={20} />
+                  </a>
+                </button>
+              </div>
+              <div className="inline-flex rounded-full items-center backdrop-blur-sm bg-white/50 shadow-lg">
+                <button className="bg-transparent text-black p-3 ">
+                  <a href="/projectboard">
+                    <FaRegStar size={20} />
+                  </a>
+                </button>
+              </div>
+              <div className="inline-flex rounded-full items-center backdrop-blur-sm bg-white/50 shadow-lg">
+                <button className="bg-transparent text-black p-3 ">
+                  <a href="/projectboard">
+                    <HiDotsVertical size={20} />
+                  </a>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="inline-flex rounded-full items-center backdrop-blur-sm bg-white/50 shadow-lg">
-          <button className="bg-transparent text-black p-3 ">
-            <a href="/projectboard">
-              <FaRegStar size={20} />
-            </a>
-          </button>
-        </div>
-        <div className="inline-flex rounded-full items-center backdrop-blur-sm bg-white/50 shadow-lg">
-          <button className="bg-transparent text-black p-3 ">
-            <a href="/projectboard">
-              <HiDotsVertical size={20} />
-            </a>
-          </button>
-        </div>
-        </div>
+        <CardBoard />
       </div>
-      <CardBoard />
-      
-
     </div>
   );
 };

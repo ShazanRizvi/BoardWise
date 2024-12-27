@@ -42,7 +42,6 @@ const ProductDashboard = () => {
     getProducts();
   }, [navigate]);
 
-  console.log(products);
 
   return loading ? (
     <div className=" flex justify-center items-center h-screen w-full">

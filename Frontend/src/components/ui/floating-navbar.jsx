@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   motion,
   AnimatePresence,
@@ -7,7 +7,7 @@ import {
   useMotionValueEvent,
 } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export const FloatingNav = ({
   navItems,
@@ -16,6 +16,23 @@ export const FloatingNav = ({
   const { scrollYProgress } = useScroll();
 
   const [visible, setVisible] = useState(true);
+  const [isLogged, setIsLogged] = useState(false);
+  const token = localStorage.getItem("access_token");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if(token){
+      setIsLogged(true);
+      navigate("/dashboard");
+    }
+    else{
+      setIsLogged(false);
+      navigate("/login");
+
+    }
+  }, [token]);
+
+  
 
   // useMotionValueEvent(scrollYProgress, "change", (current) => {
   //   // Check if current is not undefined and is a number
@@ -64,11 +81,11 @@ export const FloatingNav = ({
           </Link>
         ))}
         <Link
-          to="/login"
+          to={isLogged?"/dashboard":"/login"}
         >
         <button
           className="border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] text-black dark:text-white px-4 py-2 rounded-full">
-          <span>Login</span>
+            {isLogged?<span>Dashboard</span>:<span>Login</span>}
           <span
             className="absolute inset-x-0 w-1/2 mx-auto -bottom-px bg-gradient-to-r from-transparent via-blue-500 to-transparent  h-px" />
         </button>

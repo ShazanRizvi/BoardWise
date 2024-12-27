@@ -9,6 +9,8 @@ import AppContext from "../../../../context/AppContext";
 import SideDrawer from "./SideDrawer";
 import TaskChat from "./ChatInterfaces/TaskChat";
 import UserChat from "./ChatInterfaces/UserChat";
+import {IconGridDots} from "@tabler/icons-react"
+
 
 const BoardCard = ({ card }) => {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
@@ -44,7 +46,7 @@ const BoardCard = ({ card }) => {
             ))}
           </div>
           <div>
-            <HiDotsVertical />
+            <IconGridDots size={16} />
           </div>
         </div>
         <h2 className="text-base font-semibold mt-4">{card.title}</h2>
