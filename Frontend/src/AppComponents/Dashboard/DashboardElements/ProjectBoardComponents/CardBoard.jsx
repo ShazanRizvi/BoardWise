@@ -1,5 +1,10 @@
 import React, { useContext, useState } from "react";
-import { DndContext, useDroppable, useDraggable, DragOverlay } from "@dnd-kit/core";
+import {
+  DndContext,
+  useDroppable,
+  useDraggable,
+  DragOverlay,
+} from "@dnd-kit/core";
 import {
   sortableKeyboardCoordinates,
   rectSortingStrategy,
@@ -7,11 +12,8 @@ import {
 import AppContext from "../../../../context/AppContext";
 import BoardColumn from "./BoardColumn";
 import BoardCardOverlay from "./BoardCardOverlay";
-;
-
 const CardBoard = () => {
   const { columns, setColumns, cards, setCards } = useContext(AppContext);
- 
   const [activeId, setActiveId] = useState(null);
 
   const addColumn = () => {
@@ -80,10 +82,7 @@ const CardBoard = () => {
           />
         ))}
         <DragOverlay>
-          {activeId ? (
-            <BoardCardOverlay card={cards[activeId]}/>
-          ) : null}
-
+          {activeId ? <BoardCardOverlay card={cards[activeId]} /> : null}
         </DragOverlay>
       </div>
     </DndContext>

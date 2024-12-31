@@ -73,7 +73,7 @@ const ProjectBoard = () => {
                 <Loader width={50} height={50} />
               ) : (
                 <div className="bg-transparent">
-                  <h1 className="text-2xl font-bold">
+                  <h1 className="text-xl font-bold">
                     {" "}
                     {project?.projectName}
                   </h1>

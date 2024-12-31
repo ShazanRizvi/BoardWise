@@ -22,9 +22,11 @@ import callAPI from "@/http/axios";
 import Loader from "@/utils/Loader";
 import { DataTable } from "../DataTable/DataTable";
 import { columns } from "../DataTable/Columns";
+import Topbar from "./Topbar";
 
 const PeopleInOrg = () => {
-  const { isDrawerOpen, closeDrawer, setIsDrawerOpen } = useContext(AppContext);
+  const { isDrawerOpen, closeDrawer, setIsDrawerOpen, currentUserDetails
+   } = useContext(AppContext);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [usersOfOrg, setUsersOfOrg] = useState([]);
@@ -65,6 +67,9 @@ const PeopleInOrg = () => {
   };
 
   return (
+    <div className="w-full">
+      <Topbar orgName={currentUserDetails?.organization?.organizationName} orgLogo={currentUserDetails?.organization?.orgLogo}/>
+    
     <div className="m-4 w-full flex justify-center ">
       <div className=" w-2/3">
         <div className="flex justify-between">
@@ -110,6 +115,7 @@ const PeopleInOrg = () => {
           </div>
         )}
       </div>
+    </div>
     </div>
   );
 };

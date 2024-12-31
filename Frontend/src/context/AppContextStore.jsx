@@ -63,9 +63,6 @@ const AppContextStore = ({ children }) => {
       }
     }
 
-   
-  
-  
 
   useEffect(() => {
     fetchallUsersofOrg();

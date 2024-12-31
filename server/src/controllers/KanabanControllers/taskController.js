@@ -1,4 +1,4 @@
-const taskSerivce = require("../services/taskService");
+const taskSerivce = require("../../services/taskService");
 
 exports.createTask = async (req, res) => {
   const {
@@ -8,6 +8,7 @@ exports.createTask = async (req, res) => {
     status,
     position,
     assignedToId,
+    columnId,
   } = req.body;
   const userId = req.session.user.id;
 
