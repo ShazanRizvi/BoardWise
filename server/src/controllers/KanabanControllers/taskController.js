@@ -1,4 +1,4 @@
-const taskSerivce = require("../../services/taskService");
+const taskService = require("../../services/KanbanServices/taskService");
 
 exports.createTask = async (req, res) => {
   const {
@@ -13,14 +13,19 @@ exports.createTask = async (req, res) => {
   const userId = req.session.user.id;
 
   try {
-    const task = await taskSerivce.createTask(
+    if (!taskName || !projectId || !columnId) {
+      return res.status(400).json({ message: "Task name, project ID, and column ID are required" });
+  }
+
+    const task = await taskService.createTask(
       projectId,
       taskName,
       taskDescription,
       status,
       position,
       assignedToId,
-      userId
+      userId,
+      columnId
     );
 
     res.status(201).json({ message: "Task created successfully", task });
@@ -35,7 +40,7 @@ exports.assignUserToTask = async (req, res) => {
   const { assignedToId } = req.body;
 
   try {
-    const task = await taskSerivce.assignUserToTask(taskId, assignedToId);
+    const task = await taskService.assignUserToTask(taskId, assignedToId);
 
     res
       .status(200)
@@ -50,7 +55,7 @@ exports.getTasksbyProject = async (req, res) => {
   const { projectId } = req.params;
 
   try {
-    const tasks = await taskSerivce.getTasksbyProject(projectId);
+    const tasks = await taskService.getTasksbyProject(projectId);
     res.status(200).json({ tasks });
   } catch (error) {
     console.error("Error fetching tasks:", error.message);
@@ -63,7 +68,7 @@ exports.updateTaskPostion = async (req, res) => {
   const { newPosition, newStatus } = req.body;
 
   try {
-    const updatedTask = await taskSerivce.updateTaskPostion(
+    const updatedTask = await taskService.updateTaskPostion(
       taskId,
       newPosition,
       newStatus
@@ -84,7 +89,7 @@ exports.deleteTask = async (req, res) => {
   const { taskId } = req.params;
 
   try {
-    const task = await taskSerivce.deleteTask(taskId);
+    const task = await taskService.deleteTask(taskId);
 
     // Broadcast the deleted task event
     const io = req.app.get("socketio");
@@ -101,7 +106,7 @@ exports.updateTask = async (req, res) => {
   const { taskName, taskDescription, status, position } = req.body;
 
   try {
-    const updatedTask = await taskSerivce.updateTask(
+    const updatedTask = await taskService.updateTask(
       taskId,
       taskName,
       taskDescription,

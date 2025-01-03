@@ -10,7 +10,9 @@ const organizationRoutes = require("./src/routes/organizationRoutes");
 const productRoutes = require("./src/routes/productRoutes");
 const projectRoutes = require("./src/routes/projectRoutes");
 const userRoutes = require('./src/routes/userRoutes');
-const taskRoutes = require('./src/routes/taskRoutes');
+const taskRoutes = require('./src/routes/KanbanRoutes/taskRoutes');
+const columnRoutes = require('./src/routes/KanbanRoutes/columnRoutes');
+const kanbanBoardRoutes = require('./src/routes/KanbanRoutes/KanbanBoardRoutes');
 
 const cors = require("cors");
 const path = require("path");
@@ -151,7 +153,10 @@ redisClient.connect().then(() => {
     app.use("/api/projects", projectRoutes);
     app.use("/api/auth", authRoutes);
     app.use("/api/tasks",taskRoutes);
+    app.use("/api/columns",columnRoutes);
     app.use("/api/current_user", userRoutes);
+    app.use("/api/kanban", kanbanBoardRoutes);
+
     app.get("/", (req, res) => {
         res.send("Welcome to Boardwise server");
     });
