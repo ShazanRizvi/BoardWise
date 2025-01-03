@@ -14,6 +14,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/Input";
+import { Badge } from "../../components/ui/badge";
 import { Button } from "@/components/ui/Button";
 import {
   flexRender,

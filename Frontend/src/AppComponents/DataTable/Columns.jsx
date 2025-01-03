@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "@/components/ui/Button";
 import { IconCopy } from "@tabler/icons-react";
+import { Badge } from "../../components/ui/badge";
 
 export const columns = (handleCopy, copiedUserId) => [
   {
@@ -18,12 +19,17 @@ export const columns = (handleCopy, copiedUserId) => [
   {
     accessorKey: "role",
     header: "Role",
-    cell: ({ row }) => <span>{row.getValue("role")}</span>,
+    cell: ({ row }) => (
+      <Badge variant="secondary">{row.getValue("role")}</Badge>
+    ),
   },
   {
     accessorKey: "position",
     header: "Position",
-    cell: ({ row }) => <span>{row.getValue("position")}</span>,
+    cell: ({ row }) =>
+      row.getValue("position") !== "" ? (
+        <Badge variant="dashboard">{row.getValue("position")}</Badge>
+      ) : "N/A",
   },
   {
     accessorKey: "inviteLink",
