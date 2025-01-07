@@ -15,24 +15,30 @@ import BreadCrumb from "./ProjectBoardComponents/BreadCrumb";
 import Topbar from "../Topbar";
 
 const ProjectBoard = () => {
-  const { isDrawerOpen, setIsDrawerOpen, handleDrawer } =
-    useContext(AppContext);
+  const {
+    isDrawerOpen,
+    setIsDrawerOpen,
+    handleDrawer,
+    fetchCurrentProjectBoard,
+  } = useContext(AppContext);
   const { projectId } = useParams();
   const [loading, setLoading] = useState(null);
   const [project, setProject] = useState([]);
   const { currentUserDetails } = useContext(AppContext);
 
+  const getProjectsByProduct = async () => {
+    setLoading(true);
+    const response = await callAPI("GET", `/projects/${projectId}`, null, {
+      Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+    });
+    setProject(response?.project);
+    console.log("response", response);
+  };
+
   useEffect(() => {
     try {
-      const getProjectsByProduct = async () => {
-        setLoading(true);
-        const response = await callAPI("GET", `/projects/${projectId}`, null, {
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-        });
-        setProject(response?.project);
-        console.log("response", response);
-      };
       getProjectsByProduct();
+      fetchCurrentProjectBoard(projectId);
     } catch (error) {
       console.error("Error fetching user details:", error);
     } finally {
@@ -40,14 +46,14 @@ const ProjectBoard = () => {
     }
   }, [projectId]);
 
-  console.log("loading of API from project board", loading);
+  
 
   return loading ? (
     <div className=" flex justify-center items-center h-screen w-full">
       <Loader width={100} height={100} />
     </div>
   ) : (
-    <div className=" w-full "> 
+    <div className=" w-full ">
       <Topbar
         orgName={currentUserDetails?.organization?.organizationName}
         orgLogo={currentUserDetails?.organization?.orgLogo}
@@ -73,10 +79,7 @@ const ProjectBoard = () => {
                 <Loader width={50} height={50} />
               ) : (
                 <div className="bg-transparent">
-                  <h1 className="text-xl font-bold">
-                    {" "}
-                    {project?.projectName}
-                  </h1>
+                  <h1 className="text-xl font-bold"> {project?.projectName}</h1>
                 </div>
               )}
             </div>
