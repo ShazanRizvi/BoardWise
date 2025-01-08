@@ -9,7 +9,8 @@ exports.createTask = async (
   position,
   assignedToId,
   userId,
-  columnId
+  columnId, 
+  badges
 ) => {
   const task = await prisma.task.create({
     data: {
@@ -23,6 +24,7 @@ exports.createTask = async (
       project: { connect: { id: projectId } }, // Link to project
       createdBy: { connect: { id: userId } }, // Link to task creator
       ...(assignedToId && { assignedTo: { connect: { id: assignedToId } } }), // Optionally assign a user
+      ...(badges && { badges }),
     },
     include: {
       assignedTo: true, // Include assigned user details

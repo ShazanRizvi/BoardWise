@@ -41,6 +41,10 @@ exports.getKanbanBoard = async (projectId) => {
              description: task.taskDescription,
              status: task.status,
              position: task.position,
+             badges: task.badges ? task.badges.map(badge => ({
+              label: badge.label,
+              color: badge.color
+          })) : [{ label: "No Badge", color: "gray" }],
              assignedTo: task.assignedTo
                ? {
                    id: task.assignedTo.id,

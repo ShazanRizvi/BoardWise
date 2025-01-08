@@ -9,6 +9,7 @@ exports.createTask = async (req, res) => {
     position,
     assignedToId,
     columnId,
+    badges,
   } = req.body;
   const userId = req.session.user.id;
 
@@ -25,7 +26,8 @@ exports.createTask = async (req, res) => {
       position,
       assignedToId,
       userId,
-      columnId
+      columnId, 
+      badges
     );
 
     res.status(201).json({ message: "Task created successfully", task });

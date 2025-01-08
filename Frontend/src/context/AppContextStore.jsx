@@ -81,13 +81,12 @@ const AppContextStore = ({ children }) => {
         const transformedCards = {};
         response.kanbanBoard.columns.forEach((column) => {
           column.cards.forEach((card) => {
+            
             transformedCards[card.id] = {
               id: card.id,
               title: card.name,
               description: card.description,
-              badges: card.status
-                ? [{ label: card.status, color: "blue" }]
-                : [{ label: "TBD", color: "red" }],
+              badges:card.badges,
                 people: [
                   ...(card.createdBy ? [{
                       id: card.createdBy.id,
@@ -111,6 +110,7 @@ const AppContextStore = ({ children }) => {
       const transformedKanbanData = transformKanbanData(response);
       setCurrentProjectBoard(transformedKanbanData);
       console.log("current project board", transformedKanbanData);
+      console.log('Not transformed', response);
       setColumns(transformedKanbanData.columns);
       setCards(transformedKanbanData.cards);
     } catch (error) {
