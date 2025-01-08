@@ -44,6 +44,7 @@ const AddTaskForm = () => {
       const newOption = { value: newValue.toLowerCase(), label: newValue };
       setTags((prev) => [...prev, newOption]);
     }
+    console.log("New Option:", newValue);
   };
   const modules = {
     toolbar: [
