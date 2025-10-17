@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import DashboardCard from "./ProjectDashboardComponents/DashboardCard";
 import callAPI from "@/http/axios";
 import Loader from "@/utils/Loader";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { FaPlus } from "react-icons/fa6";
 import { FcGenealogy } from "react-icons/fc";
 import AddEditTaskDialog from "../DashboardElements/ProjectBoardComponents/AddEditTaskDialog";

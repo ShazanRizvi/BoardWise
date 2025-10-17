@@ -2,7 +2,7 @@ import React from 'react'
 import { useDraggable } from "@dnd-kit/core";
 import { Badge } from "@/components/ui/badge";
 import { HiDotsVertical } from "react-icons/hi";
-import { Separator } from "@/components/ui/Separator";
+import { Separator } from "@/components/ui/separator";
 import { AnimatedTooltip } from "@/components/ui/animated-tooltip";
 import { BiMessageSquare } from "react-icons/bi";
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import ProductCard from "./ProductDashboardComponents/ProductCard";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { FaPlus } from "react-icons/fa6";
 import { FcGenealogy } from "react-icons/fc";
 import AddEditTaskDialog from "../DashboardElements/ProjectBoardComponents/AddEditTaskDialog";

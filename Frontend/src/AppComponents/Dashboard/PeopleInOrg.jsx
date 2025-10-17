@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Link, useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { IconCopy } from "@tabler/icons-react";
 import toast from "react-hot-toast";
 import AddEditTaskDialog from "./DashboardElements/ProjectBoardComponents/AddEditTaskDialog";

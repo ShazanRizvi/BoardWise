@@ -13,9 +13,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Input } from "@/components/ui/Input";
+import { Input } from "@/components/ui/input";
 import { Badge } from "../../components/ui/badge";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import {
   flexRender,
   getCoreRowModel,

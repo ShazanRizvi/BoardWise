@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 
 import { useDroppable } from "@dnd-kit/core";
 import BoardCard from "./BoardCard";

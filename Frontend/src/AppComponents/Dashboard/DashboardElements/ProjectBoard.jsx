@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { FcParallelTasks } from "react-icons/fc";
 import CardBoard from "./ProjectBoardComponents/CardBoard";
-import { Button } from "@/components/ui/Button";
+
 import { FiSearch } from "react-icons/fi";
 import { FaRegStar } from "react-icons/fa6";
 import { HiDotsVertical } from "react-icons/hi";
