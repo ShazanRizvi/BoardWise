@@ -72,20 +72,34 @@ const CardBoard = () => {
     setColumns(updatedColumns);
   };
   return (
+  
     <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div className="w-full flex mt-5 p-2 h-full bg-gray-100 rounded-xl shadow-2xl shadow-gray-500/50">
-        {columns.map((column) => (
-          <BoardColumn
-            key={column.id}
-            column={column}
-            cards={column.cardIds.map((cardId) => cards[cardId])}
-          />
-        ))}
+
+        {columns.length === 0 ? (
+      <div className="flex-grow flex items-center justify-center h-full">
+        <button
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+          onClick={()=>alert('task added')}
+        >
+          Add Task
+        </button>
+      </div>
+    ) : (
+      columns.map((column) => (
+        <BoardColumn
+          key={column.id}
+          column={column}
+          cards={column.cardIds.map((cardId) => cards[cardId])}
+        />
+      ))
+    )}
         <DragOverlay>
           {activeId ? <BoardCardOverlay card={cards[activeId]} /> : null}
         </DragOverlay>
       </div>
     </DndContext>
+    
   );
 };
 
