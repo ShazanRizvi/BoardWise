@@ -111,6 +111,7 @@ model Column {
   id        String   @id @default(uuid())
   name      String
   position  Int
+  title     String     
   project   Project  @relation(fields: [projectId], references: [id])
   projectId String
   tasks     Task[]

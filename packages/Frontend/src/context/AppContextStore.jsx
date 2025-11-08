@@ -10,6 +10,7 @@ const AppContextStore = ({ children }) => {
   const [selectedCard, setSelectedCard] = useState(null);
   const [usersOfOrg, setUsersOfOrg] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [projectId, setProjectId]=useState(null);
   const [products, setProducts] = useState([]);
   const [currentUserDetails, setCurrentUserDetails] = useState(null);
   const [currentProjectBoard, setCurrentProjectBoard] = useState(null);
@@ -65,6 +66,7 @@ const AppContextStore = ({ children }) => {
 
   const fetchCurrentProjectBoard = async (projectId) => {
     setLoading(true);
+    setProjectId(projectId);
     try {
       const response = await callAPI("GET", `/kanban/${projectId}`, null, {
         Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -240,6 +242,7 @@ const AppContextStore = ({ children }) => {
         setProducts,
         currentUserDetails,
         fetchCurrentProjectBoard,
+        projectId
       }}
     >
       {children}

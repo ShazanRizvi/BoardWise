@@ -14,7 +14,8 @@ import ReactMultiSelect from "../../../../../components/ui/multi-select-new";
 const AddTaskForm = () => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [isTagPopoverOpen, setIsTagPopoverOpen] = useState(false);
-  const { usersOfOrg } = useContext(AppContext);
+  const [loading, setLoading] = useState(false);
+  const { usersOfOrg, projectId } = useContext(AppContext);
   console.log("users of org from add task form", usersOfOrg);
 
   const transformedPeople = usersOfOrg?.map(person => ({
@@ -82,6 +83,27 @@ const AddTaskForm = () => {
     "image",
     "video",
   ];
+  console.log('Project ID from task form',projectId);
+
+    const handleSubmit = async (values, projectId) => {
+      setLoading(true);
+  
+      try {
+        const response = await callAPI(
+          "POST",
+          `/projects/create_project/${productId}`,
+          values,
+          {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          }
+        );
+        console.log("response", response);
+      } catch (error) {
+        console.error("API Error:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
   const handleTogglePopover = () => {
     setIsPopoverOpen((prev) => !prev);
   };

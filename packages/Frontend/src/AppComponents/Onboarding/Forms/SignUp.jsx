@@ -57,7 +57,7 @@ const SignUp = () => {
       <Formik
         initialValues={{
           username: "",
-          email: "",
+          emailAddress: "",
           password: "",
         }}
         //validationSchema={validationSchema}
