@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   DndContext,
   useDroppable,
@@ -12,9 +12,42 @@ import {
 import AppContext from "../../../../context/AppContext";
 import BoardColumn from "./BoardColumn";
 import BoardCardOverlay from "./BoardCardOverlay";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { GoPlus } from "react-icons/go";
+import AddEditTaskDialog from "./AddEditTaskDialog";
+import AddTaskForm from "./ModalForms/AddTaskForm";
+import { FcGenealogy } from "react-icons/fc";
+import EmptyDashboard from "../../../DataTable/EmptyDashboard";
+
+
 const CardBoard = () => {
   const { columns, setColumns, cards, setCards } = useContext(AppContext);
   const [activeId, setActiveId] = useState(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const handleDialogOpen = () => {
+    setIsDialogOpen((prev) => !prev);
+  };
+
+  useEffect(()=>{
+    if (columns.length === 0) {
+      const defaultColumns = [
+        { name: "column-todo", title: "To Do", cardIds: [] },
+        { name: "column-inprogress", title: "In Progress", cardIds: [] },
+        { name: "column-done", title: "Done", cardIds: [] },
+      ];
+      setColumns(defaultColumns);
+    }
+
+
+
+  }, [columns, setColumns])
+
+
+
+
+
+
+
 
   const addColumn = () => {
     setColumns([
@@ -74,13 +107,36 @@ const CardBoard = () => {
   return (
     <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div className="w-full flex mt-5 p-2 h-full bg-gray-100 rounded-xl shadow-2xl shadow-gray-500/50">
-        {columns.map((column) => (
-          <BoardColumn
-            key={column.id}
-            column={column}
-            cards={column.cardIds.map((cardId) => cards[cardId])}
-          />
-        ))}
+        {columns.length === 0 ? (
+          <div className="flex-grow flex items-center justify-center h-full">
+            <div>
+              <EmptyDashboard Resource="Tasks" />
+              <Button
+                className="px-4 py-2"
+                variant="outline"
+                onClick={handleDialogOpen}
+              >
+                <GoPlus size={30} /> Add Task
+              </Button>
+              <AddEditTaskDialog
+          isDialogOpen={isDialogOpen}
+          setIsDialogOpen={setIsDialogOpen}
+          Title={`Add Task`}
+          icon={<FcGenealogy size={24} />}
+        >
+          <AddTaskForm />
+        </AddEditTaskDialog>
+            </div>
+          </div>
+        ) : (
+          columns.map((column) => (
+            <BoardColumn
+              key={column.id}
+              column={column}
+              cards={column.cardIds.map((cardId) => cards[cardId])}
+            />
+          ))
+        )}
         <DragOverlay>
           {activeId ? <BoardCardOverlay card={cards[activeId]} /> : null}
         </DragOverlay>
