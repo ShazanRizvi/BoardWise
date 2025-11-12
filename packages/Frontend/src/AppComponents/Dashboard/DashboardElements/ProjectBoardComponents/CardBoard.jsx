@@ -18,32 +18,32 @@ import AddEditTaskDialog from "./AddEditTaskDialog";
 import AddTaskForm from "./ModalForms/AddTaskForm";
 import { FcGenealogy } from "react-icons/fc";
 import EmptyDashboard from "../../../DataTable/EmptyDashboard";
+import { useParams } from "react-router-dom";
+import Loader from "../../../../utils/Loader";
 
 
 const CardBoard = () => {
-  const { columns, setColumns, cards, setCards } = useContext(AppContext);
+  const projectId=useParams().projectId;
+  const { columns, setColumns, cards, createDefaultColumns, fetchCurrentProjectBoard, loading } = useContext(AppContext);
   const [activeId, setActiveId] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const handleDialogOpen = () => {
     setIsDialogOpen((prev) => !prev);
   };
 
-  useEffect(()=>{
-    if (columns.length === 0) {
-      const defaultColumns = [
-        { name: "column-todo", title: "To Do", cardIds: [] },
-        { name: "column-inprogress", title: "In Progress", cardIds: [] },
-        { name: "column-done", title: "Done", cardIds: [] },
-      ];
-      setColumns(defaultColumns);
-    }
+//  useEffect(() => {
+//   if (!projectId) return;
 
-
-
-  }, [columns, setColumns])
-
-
-
+//   const initializeBoard = async () => {
+    
+//     console.log("Existing columns from new :", existingColumns);
+//     if (existingColumns?.length === 0) {
+//       await createDefaultColumns(projectId);
+//     }
+//     const existingColumns = await fetchCurrentProjectBoard(projectId);
+//   };
+//   initializeBoard();
+// }, [projectId]);
 
 
 
@@ -104,8 +104,11 @@ const CardBoard = () => {
 
     setColumns(updatedColumns);
   };
-  return (
-    <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+   return loading ? (
+    <div className=" flex justify-center items-center h-screen w-full">
+      <Loader width={100} height={100} />
+    </div>
+  ) : (<DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div className="w-full flex mt-5 p-2 h-full bg-gray-100 rounded-xl shadow-2xl shadow-gray-500/50">
         {columns.length === 0 ? (
           <div className="flex-grow flex items-center justify-center h-full">
@@ -129,11 +132,11 @@ const CardBoard = () => {
             </div>
           </div>
         ) : (
-          columns.map((column) => (
+          columns?.map((column) => (
             <BoardColumn
               key={column.id}
               column={column}
-              cards={column.cardIds.map((cardId) => cards[cardId])}
+              cards={column?.cardIds?.map((cardId) => cards[cardId])}
             />
           ))
         )}
@@ -141,8 +144,13 @@ const CardBoard = () => {
           {activeId ? <BoardCardOverlay card={cards[activeId]} /> : null}
         </DragOverlay>
       </div>
-    </DndContext>
-  );
+    </DndContext>)
+
+
+
+
+
+  
 };
 
 export default CardBoard;

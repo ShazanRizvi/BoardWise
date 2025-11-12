@@ -24,7 +24,7 @@ const ProjectBoard = () => {
   const { projectId } = useParams();
   const [loading, setLoading] = useState(null);
   const [project, setProject] = useState([]);
-  const { currentUserDetails } = useContext(AppContext);
+  const { currentUserDetails, createDefaultColumns } = useContext(AppContext);
 
   const getProjectsByProduct = async () => {
     setLoading(true);
@@ -37,16 +37,23 @@ const ProjectBoard = () => {
 
   useEffect(() => {
     try {
+      setLoading(true);
       getProjectsByProduct();
-      fetchCurrentProjectBoard(projectId);
+      const initializeBoard = async () => {
+        const existingColumns = await fetchCurrentProjectBoard(projectId);
+
+        console.log("Existing columns from new :", existingColumns);
+        if (existingColumns?.length === 0) {
+          await createDefaultColumns(projectId);
+        }
+      };
+      initializeBoard();
     } catch (error) {
       console.error("Error fetching user details:", error);
     } finally {
       setLoading(false);
     }
   }, [projectId]);
-
-  
 
   return loading ? (
     <div className=" flex justify-center items-center h-screen w-full">

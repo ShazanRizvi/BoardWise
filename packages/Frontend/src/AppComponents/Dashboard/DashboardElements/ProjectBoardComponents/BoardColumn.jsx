@@ -19,7 +19,7 @@ import {
 const BoardColumn = ({ column, cards }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { setNodeRef } = useDroppable({
-    id: column.id,
+    id: column?.id,
   });
 
   const handleDialogOpen = () => {
@@ -30,8 +30,8 @@ const BoardColumn = ({ column, cards }) => {
       <div className="p-2 sticky top-0 bottom-5 bg-gray-100 z-10">
         <div className="flex justify-between items-center">
           <div className="flex gap-2 items-center">
-            <h2 className="text-base font-semibold">{column.title}</h2>
-            <div className=" text-gray-500">{cards.length} </div>
+            <h2 className="text-base font-semibold">{column?.title}</h2>
+            <div className=" text-gray-500">{cards?.length} </div>
           </div>
           <Popover>
             <PopoverTrigger>
@@ -56,7 +56,7 @@ const BoardColumn = ({ column, cards }) => {
         <AddEditTaskDialog
           isDialogOpen={isDialogOpen}
           setIsDialogOpen={setIsDialogOpen}
-          Title={`${column.title} Task`}
+          Title={`${column?.title} Task`}
           icon={<FcGenealogy size={24} />}
         >
           <AddTaskForm />
@@ -64,8 +64,8 @@ const BoardColumn = ({ column, cards }) => {
       </div>
 
       <div className="overflow-y-auto  mr-2 ml-2 pb-5  ">
-        {cards.map((card) => (
-          <BoardCard key={card.id} card={card} />
+        {cards?.map((card) => (
+          <BoardCard key={card?.id} card={card} />
         ))}
       </div>
     </div>

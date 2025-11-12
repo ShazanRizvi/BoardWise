@@ -17,6 +17,9 @@ const AppContextStore = ({ children }) => {
   const [columns, setColumns] = useState([]);
   const [cards, setCards] = useState([]);
 
+  console.log("Project ID context in appcontextstore:", projectId);
+
+
   const defaultImages = [
     "https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=3387&q=80",
     "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YXZhdGFyfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60",
@@ -25,6 +28,46 @@ const AppContextStore = ({ children }) => {
     "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=3540&q=80",
     "https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=3534&q=80",
   ];
+
+  //Create default columns when loading a project for first time
+
+ const createDefaultColumns = async (projectId) => {
+  console.log("Creating default columns for project:", projectId);
+  console.log("Current columns before creation:", columns);
+  if (projectId) {
+    const defaultColumns = [
+      { name: "Todo", position: 1 },
+      { name: "InProgress", position: 2 },
+      { name: "Completed", position: 3 },
+    ];
+    setColumns(defaultColumns);
+    setLoading(true);
+    try {
+      for (const col of defaultColumns) {
+        await callAPI(
+          "POST",
+          `/columns/create_column`,
+          {
+            name: col.name,
+            position: col.position,
+            projectId: projectId,
+          },
+          {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          }
+        );
+      }
+      fetchCurrentProjectBoard(projectId);
+    } catch (error) {
+      console.error("Error creating default columns:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
+};
+
+
+
   //Fetch All Users in an organization
   const fetchallUsersofOrg = async () => {
     setLoading(true);
@@ -65,8 +108,9 @@ const AppContextStore = ({ children }) => {
   };
 
   const fetchCurrentProjectBoard = async (projectId) => {
-    setLoading(true);
+    //setLoading(true);
     setProjectId(projectId);
+    console.log("Fetching board for project ID:", projectId);
     try {
       const response = await callAPI("GET", `/kanban/${projectId}`, null, {
         Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -111,14 +155,15 @@ const AppContextStore = ({ children }) => {
       };
       const transformedKanbanData = transformKanbanData(response);
       setCurrentProjectBoard(transformedKanbanData);
-      console.log("current project board", transformedKanbanData);
-      console.log('Not transformed', response);
+      // console.log("current project board", transformedKanbanData);
+      // console.log('Not transformed', response);
       setColumns(transformedKanbanData.columns);
       setCards(transformedKanbanData.cards);
+      return transformedKanbanData.columns;  
     } catch (error) {
       console.error("Error fetching user details:", error);
     } finally {
-      setLoading(false);
+      //setLoading(false);
     }
   };
 
@@ -242,7 +287,8 @@ const AppContextStore = ({ children }) => {
         setProducts,
         currentUserDetails,
         fetchCurrentProjectBoard,
-        projectId
+        projectId,
+        createDefaultColumns,
       }}
     >
       {children}
