@@ -1,16 +1,16 @@
 # BoardWise
 
 ## Overview
-This project is a full-stack Project Management System designed for collaborative task management within organizations. It includes features such as user roles (Admin, Team Member), hierarchical access to resources (products, projects, tasks), and a drag-and-drop interface for managing tasks on a Kanban board.
+BoardWise is a full-stack Project Management System designed to facilitate collaborative task management within organizations. It supports user roles (Admin, Team Member), hierarchical access to products, projects, and tasks, and offers an intuitive drag-and-drop Kanban board interface.
 
 ---
 
 ## Features
 - **User Management:** Admins can invite users, assign roles, and manage access levels for resources.
-- **Resource Hierarchy:** Organizations contain products, products contain projects, and projects have tasks.
-- **Access Control:** Admins can assign granular access to users for products, projects, and tasks.
-- **Kanban Board:** Users can manage tasks visually with drag-and-drop functionality.
-- **Authentication:** Includes user signup, login, and invite-based account activation.
+- **Resource Hierarchy:** Organizations contain products, which contain projects, which hold tasks.
+- **Access Control:** Granular user access management for products, projects, and tasks.
+- **Kanban Board:** Drag-and-drop task management user interface.
+- **Authentication:** Signup, login, and invite-based account activation.
 
 ---
 
@@ -41,6 +41,7 @@ Ensure the following are installed on your system:
 - PostgreSQL (latest version)
 - Redis (latest version)
 - Git
+- Docker Desktop (running Docker daemon)
 
 ---
 
@@ -52,48 +53,21 @@ $ git clone https://github.com/ShazanRizvi/BoardWise
 $ cd BoardWise
 ```
 
-### 2. Backend Setup
+### 2. Run App through docker
 
 #### Navigate to the Backend Directory
 ```bash
-$ cd server
+$ cd packages/server
 ```
 
 #### Install Dependencies
 ```bash
 $ npm install
 ```
-
-#### Configure Environment Variables
-Create a `.env` file in the `server` directory and add the following:
-```env
-DATABASE_URL=postgresql://username:password@localhost:5432/boardwise_db
-SESSION_SECRET=your_session_secret
-REDIS_PASSWORD=your_redis_password
-REDIS_HOST=localhost
-REDIS_PORT=6379
-JWT_SECRET=your_jwt_secret
-BOARDWISE_FRONTEND_HOST=your_frontend_URL
-```
-
-#### Initialize the Database
-```bash
-$ npx prisma migrate dev --name init
-$ npx prisma db seed
-```
-
-#### Start the Server
-```bash
-$ npm start
-```
-
-The backend will be available at `http://localhost:5050`.
-
-### 3. Frontend Setup
 
 #### Navigate to the Frontend Directory
 ```bash
-$ cd ../client
+$ cd packages/Frontend
 ```
 
 #### Install Dependencies
@@ -102,16 +76,17 @@ $ npm install
 ```
 
 #### Configure Environment Variables
-Create a `.env` file in the `client` directory and add:
-```env
-VITE_API_BASE_URL=http://localhost:5050/api
-```
+Create a `.env` file in the `Boardwise` main directory from `.env.example` file
 
-#### Start the Development Server
+#### Make sure docker desktop or damon is running
+
+#### Start the App in dev mode
 ```bash
-$ npm start
+$ npm run migrate:dev 
+$ npm run start:dev 
 ```
 
+The backend will be available at `http://localhost:5050`.
 The frontend will be available at `http://localhost:3000`.
 
 ---
@@ -144,4 +119,13 @@ API Documentation available at: http://localhost:5050/api-docs
 3. Commit your changes and push the branch.
 4. Open a pull request.
 
+---
 
+## Additional Notes
+- Backend and Frontend are managed as separate packages inside a monorepo under `packages/` with Lerna and npm workspaces.
+- Docker Compose manages PostgreSQL and Redis containers.
+- The project switches environment variables and connection strings depending on whether the app is running locally or inside Docker.
+- Separate scripts handle migrations in development (`prisma migrate dev`) and production (`prisma migrate deploy`) scenarios.
+- The dev startup script verifies Docker daemon availability and orchestrates container startup and app execution smoothly.
+
+---
