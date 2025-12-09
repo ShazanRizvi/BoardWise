@@ -110,7 +110,7 @@ model User {
 model Column {
   id        String   @id @default(uuid())
   name      String
-  position  Int
+  position  Int //Postion of the column on the Kanban Board
   title     String     
   project   Project  @relation(fields: [projectId], references: [id])
   projectId String

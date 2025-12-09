@@ -46,16 +46,27 @@ exports.assignUserToTask = async (taskId, assignedToId) => {
   return task;
 };
 
-exports.getTasksbyProject = async (projectId) => {
+exports.getTasksbyProject = async (projectId, columnId = null) => {
+  const whereClause = {
+    projectId,
+    ...(columnId && { columnId }) // Only add columnId filter if provided
+  };
+
   const tasks = await prisma.task.findMany({
-    where: { projectId },
+    where: whereClause,
     include: {
       assignedTo: true, // Include assigned user details
       createdBy: true, // Include creator details
     },
+    // Optional: Order by position for consistent Kanban display
+    orderBy: {
+      position: 'asc'
+    }
   });
+  
   return tasks;
 };
+
 
 exports.updateTaskPostion = async (taskId, newPosition, newStatus) => {
   const updatedTask = await prisma.task.update({

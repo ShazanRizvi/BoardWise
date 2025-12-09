@@ -12,9 +12,7 @@ import AppContext from "../../../../../context/AppContext";
 import ReactMultiSelect from "../../../../../components/ui/multi-select-new";
 
 const AddTaskForm = () => {
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const [isTagPopoverOpen, setIsTagPopoverOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
+
   const { usersOfOrg, projectId } = useContext(AppContext);
   console.log("users of org from add task form", usersOfOrg);
 
@@ -23,15 +21,7 @@ const AddTaskForm = () => {
     label: person.name
 }));
 
-  const availableTeammates = [
-    { value: "john", label: "John Doe" },
-    { value: "jane", label: "Jane Smith" },
-    { value: "alex", label: "Alex Johnson" },
-    { value: "Anurag Goyal", label: "Anurag Goyal" },
-    { value: "Anurag Goyal", label: "Anurag Goyal" },
-    { value: "Anurag Goyal", label: "Anurag Goyal" },
-    { value: "Anurag Goyal", label: "Anurag Goyal" },
-  ];
+
   const [tags, setTags] =useState([
     { value: "Bug", label: "Bug" },
     { value: "Frontend", label: "Frontend" },
@@ -85,36 +75,11 @@ const AddTaskForm = () => {
   ];
   console.log('Project ID from task form',projectId);
 
-    const handleSubmit = async (values, projectId) => {
-      setLoading(true);
-  
-      try {
-        const response = await callAPI(
-          "POST",
-          `/projects/create_project/${productId}`,
-          values,
-          {
-            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-          }
-        );
-        console.log("response", response);
-      } catch (error) {
-        console.error("API Error:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-  const handleTogglePopover = () => {
-    setIsPopoverOpen((prev) => !prev);
-  };
-  const handleToggleTagPopover = () => {
-    setIsTagPopoverOpen((prev) => !prev);
-  };
   return (
     <Formik
       initialValues={{
         taskName: "",
-        description: "",
+        taskDescription: "",
         dueDate: "",
       }}
       onSubmit={(values, { resetForm }) => {
@@ -129,7 +94,7 @@ const AddTaskForm = () => {
           <div className="grid gap-4">
             <div className="w-full">
               <Label>Task Name</Label>
-              <Input type="text" placeholder="Give Your Project a Name"></Input>
+              <Input type="text" placeholder="Development Task"></Input>
               <ErrorMessage
                 name="taskName"
                 component="div"
@@ -137,30 +102,14 @@ const AddTaskForm = () => {
               />
             </div>
 
-            <div className="w-full mt-2">
+            {/* <div className="w-full mt-2">
               <Label>Task Members</Label>
-              {/* <MultiSelect
-                options={availableTeammates}
-                placeholder="Select Teammates"
-                animation={2}
-                maxCount={3}
-                isPopoverOpen={isPopoverOpen}
-                setIsPopoverOpen={setIsPopoverOpen}
-                handleTogglePopover={handleTogglePopover}
-              /> */}
+              
               <ReactMultiSelect selectOptions={transformedPeople} SelectName="TaskMembers"/>
-            </div>
+            </div> */}
             <div className="w-full mt-2">
               <Label>Task Badges</Label>
-              {/* <MultiSelect
-                options={tags}
-                placeholder="Select Tags"
-                animation={2}
-                maxCount={3}
-                isPopoverOpen={isTagPopoverOpen}
-                setIsPopoverOpen={setIsTagPopoverOpen}
-                handleTogglePopover={handleToggleTagPopover}
-              /> */}
+              
               <ReactMultiSelect selectOptions={tags} SelectName="Task Badges" isCreatable={true} 
         onCreateOption={handleCreateNewOption}/>
 
